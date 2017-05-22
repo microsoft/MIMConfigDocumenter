@@ -286,3 +286,8 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+/src/SolutionOutput/MIMConfigDocumenterCmd.exe.config
+/src/SolutionOutput/MIMConfigDocumenterCmd.exe
+/src/SolutionOutput/MIMConfigDocumenter.psm1
+/src/SolutionOutput/MIMConfigDocumenter.dll
+/src/SolutionOutput/InvokeDocumenter-Contoso.ps1

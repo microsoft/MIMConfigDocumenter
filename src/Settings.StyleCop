@@ -1,0 +1,22 @@
+<StyleCopSettings Version="105">
+  <GlobalSettings>
+    <CollectionProperty Name="RecognizedWords">
+      <Value>diffgram</Value>
+      <Value>metaverse</Value>
+      <Value>indexable</Value>
+      <Value>hashtable</Value>
+      <Value>deprovisioning</Value>
+      <Value>Sql</Value>
+      <Value>Ldap</Value>
+    </CollectionProperty>
+  </GlobalSettings>
+  <Analyzers>
+    <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
+      <AnalyzerSettings>
+        <CollectionProperty Name="Hungarian">
+          <Value>cs</Value>
+        </CollectionProperty>
+      </AnalyzerSettings>
+    </Analyzer>
+  </Analyzers>
+</StyleCopSettings>
