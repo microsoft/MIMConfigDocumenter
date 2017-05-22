@@ -1,0 +1,153 @@
+<saved-ma-configuration server='SERVER1' export-date='2013-03-31 12:24:48.304'>
+<!--WARNING>
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!! The contents of this file should not be edited.
+!! Any such modifications to this file may result in errors during import.
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</WARNING-->
+<ma-data>
+ <format-version>1</format-version>
+ <id>{0C3357F1-FAD7-4E1E-88E2-A9CFCFE67491}</id>
+ <name>HROrg</name>
+ <category>MSSQL</category>
+ <subtype/>
+ <ma-listname/>
+ <ma-companyname/>
+ <creation-time>2012-09-06 01:59:04.523</creation-time>
+ <last-modification-time>2012-10-10 19:48:55.290</last-modification-time>
+ <version>8</version>
+ <internal-version>0</internal-version>
+ <password-sync-allowed>0</password-sync-allowed>
+ <schema>
+  <dsml:dsml xmlns:dsml="http://www.dsml.org/DSML" xmlns:ms-dsml="http://www.microsoft.com/MMS/DSML"><dsml:directory-schema ms-dsml:no-objectclass-validation="true"><dsml:class id="organization" type="structural"><dsml:name>organization</dsml:name><dsml:attribute ref="#OrgUnitID" required="false" /><dsml:attribute ref="#ParentID" required="false" /><dsml:attribute ref="#export_password" required="false" /></dsml:class><dsml:attribute-type id="OrgUnitID" single-value="true" ms-dsml:immutable="true" ms-dsml:range-upper="50"><dsml:name>OrgUnitID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="ParentID" single-value="true" ms-dsml:range-upper="50"><dsml:name>ParentID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="export_password" single-value="true" ms-dsml:encrypted="true" ms-dsml:export-only="true"><dsml:name>export_password</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type></dsml:directory-schema></dsml:dsml>
+ </schema>
+ <attribute-inclusion><attribute>OrgUnitID</attribute><attribute>ParentID</attribute><attribute>export_password</attribute></attribute-inclusion>
+ <stay-disconnector />
+ <join><join-profile cd-object-type="organization"><join-criterion id="{A11F1966-799C-4CBD-8E97-29E8636A8CD2}"><search mv-object-type="organization"><attribute-mapping mv-attribute="o"><direct-mapping><src-attribute>OrgUnitID</src-attribute></direct-mapping></attribute-mapping></search><resolution type="none"><script-context></script-context></resolution></join-criterion></join-profile></join>
+ <projection><class-mapping type="declared" id="{BFF4463F-A44E-4E0C-B753-E9B2F9DE2802}" cd-object-type="organization"><mv-object-type>organization</mv-object-type></class-mapping></projection>
+ <export-attribute-flow />
+ <provisioning-cleanup type="declared"><action>make-normal-disconnector</action></provisioning-cleanup>
+ <extension />
+ <controller-configuration>
+ <application-protection>low</application-protection>
+ <application-architecture>process</application-architecture>
+ <impersonation>
+  <domain>contoso</domain>
+  <user>fim-install</user>
+ </impersonation>
+</controller-configuration>
+
+ <description>Reads HR Org structure for BHOLD</description>
+ <ma-ui-settings><account-joiner-queries><attributes><cs><attribute name="OrgID" header="OrgID" size="100" /><attribute name="Organization" header="Organization" size="100" /><attribute name="Parent" header="Parent" size="100" /></cs><mv></mv></attributes><filters max_mv_search_results=""></filters></account-joiner-queries></ma-ui-settings>
+ <private-configuration>
+  <oledbma-configuration><connection-info><authentication>integrated</authentication><provider>SQLOLEDB</provider><server>localhost</server><databasename>HRData</databasename><tablename>dbo.vwOrg</tablename><user>fim-install</user><domain>contoso</domain></connection-info><mms-info><column-info><column><name>OrgUnitID</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>ParentID</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><primary-key></primary-key></column-info><anchor><attribute>OrgUnitID</attribute></anchor><object-type>organization</object-type></mms-info><password-extension-config><password-extension-enabled>0</password-extension-enabled><dll></dll><password-set-enabled></password-set-enabled><password-change-enabled></password-change-enabled><connection-info><connect-to></connect-to><user></user></connection-info><timeout></timeout></password-extension-config><enable-unapplied-merge>0</enable-unapplied-merge></oledbma-configuration>
+ </private-configuration>
+ <SyncConfig-refresh-schema>0</SyncConfig-refresh-schema>
+ <ma-partition-data>
+ <partition>
+  <id>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</id>
+  <name>default</name>
+  <creation-time>2012-09-06 01:59:04.523</creation-time>
+  <last-modification-time>2012-10-10 19:48:55.290</last-modification-time>
+  <version>9</version>
+  <selected>1</selected>
+  <filter>
+   <object-classes>
+    <object-class>organization</object-class>
+   </object-classes>
+   <containers>
+    <exclusions/>
+    <inclusions>
+     <inclusion></inclusion>
+    </inclusions>
+   </containers>
+  </filter>
+  <allowed-operations>3</allowed-operations>
+  <current>
+   <batch-number>1</batch-number>
+   <sequence-number>0</sequence-number>
+  </current>
+  <last-successful-batch>0</last-successful-batch>
+  <filter-hints>
+   <object-classes>
+    <object-class>
+     <name>organization</name>
+     <hierarchy>
+      <object-class>organization</object-class>
+     </hierarchy>
+     <included>1</included>
+    </object-class>
+   </object-classes>
+  </filter-hints>
+ </partition>
+</ma-partition-data>
+
+ <ma-run-data>
+ <run-configuration>
+  <id>{66023959-FE66-4352-AD19-F023FB303C9B}</id>
+  <name>_Delta Sync</name>
+  <creation-time>2012-09-28 06:26:49.880</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:26:49.880</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{E56B15B3-EA4C-4CF0-9F02-5A5852A6AEAF}</id>
+  <name>_Export</name>
+  <creation-time>2012-09-28 06:26:49.880</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:26:49.880</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{DA36020E-94AE-4BD6-B192-745A6466A9B7}</id>
+  <name>_Full Import</name>
+  <creation-time>2012-09-28 06:26:49.880</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:26:49.880</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{41A41D4E-51D2-411E-84FE-AF10D7240384}</id>
+  <name>_Full Sync</name>
+  <creation-time>2012-09-28 06:26:49.880</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:26:49.880</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{9A7ABBFE-4FA2-461D-8444-617B29DEAE03}</id>
+  <name>FI</name>
+  <creation-time>2012-09-06 02:10:11.683</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 02:10:11.683</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{6F20A9D1-86FF-4466-84B5-F6B978F9C252}</id>
+  <name>FS</name>
+  <creation-time>2012-09-06 02:10:11.683</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 02:10:11.683</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{BD238EA2-DA1D-4707-BA88-322EFE4F0AE1}</id>
+  <name>Import OUs from HR</name>
+  <creation-time>2012-09-06 01:59:04.537</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 01:59:04.537</last-modification-time>
+  <configuration><step><step-type type="full-import-reevaluate-rules"></step-type><threshold></threshold><partition>{B8101440-C30E-4E0E-8FBF-EAF53F6BC598}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+</ma-run-data>
+
+ <capabilities-mask>ac05</capabilities-mask>
+ <export-type>2</export-type>
+ <dn-construction><attribute>OrgUnitID</attribute></dn-construction>
+ <password-sync><maximum-retry-count>10</maximum-retry-count><retry-interval>60</retry-interval><allow-low-security>0</allow-low-security></password-sync>
+ <component_mappings />
+</ma-data>
+
+</saved-ma-configuration>

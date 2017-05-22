@@ -1,0 +1,177 @@
+<saved-ma-configuration server='SERVER1' export-date='2013-03-31 12:24:48.304'>
+<!--WARNING>
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!! The contents of this file should not be edited.
+!! Any such modifications to this file may result in errors during import.
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</WARNING-->
+<ma-data>
+ <format-version>1</format-version>
+ <id>{39D3FCED-BA37-4EF8-9923-35A511C4901A}</id>
+ <name>BHOLD FIMEmployee</name>
+ <category>MSSQL</category>
+ <subtype/>
+ <ma-listname/>
+ <ma-companyname/>
+ <creation-time>2012-09-06 18:41:55.013</creation-time>
+ <last-modification-time>2012-10-05 14:31:21.610</last-modification-time>
+ <version>10</version>
+ <internal-version>0</internal-version>
+ <password-sync-allowed>0</password-sync-allowed>
+ <schema>
+  <dsml:dsml xmlns:dsml="http://www.dsml.org/DSML" xmlns:ms-dsml="http://www.microsoft.com/MMS/DSML"><dsml:directory-schema ms-dsml:no-objectclass-validation="true"><dsml:class id="person" type="structural"><dsml:name>person</dsml:name><dsml:attribute ref="#RecordID" required="true" /><dsml:attribute ref="#Orgunit" required="false" /><dsml:attribute ref="#DisplayName" required="false" /><dsml:attribute ref="#DefaultAlias" required="false" /><dsml:attribute ref="#Domain" required="false" /><dsml:attribute ref="#Active" required="false" /><dsml:attribute ref="#StartDate" required="false" /><dsml:attribute ref="#EndDate" required="false" /><dsml:attribute ref="#EmployeeID" required="false" /><dsml:attribute ref="#JobTitle" required="false" /><dsml:attribute ref="#export_password" required="false" /></dsml:class><dsml:attribute-type id="RecordID" single-value="true" user-modification="false" ms-dsml:immutable="true" ms-dsml:range-upper="2147483647" ms-dsml:range-lower="-2147483648"><dsml:name>RecordID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.27</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Orgunit" single-value="true" ms-dsml:range-upper="255"><dsml:name>Orgunit</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="DisplayName" single-value="true" ms-dsml:range-upper="255"><dsml:name>DisplayName</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="DefaultAlias" single-value="true" ms-dsml:range-upper="255"><dsml:name>DefaultAlias</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Domain" single-value="true" ms-dsml:range-upper="255"><dsml:name>Domain</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Active" single-value="true"><dsml:name>Active</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.7</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="StartDate" single-value="true" ms-dsml:range-upper="10"><dsml:name>StartDate</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="EndDate" single-value="true" ms-dsml:range-upper="10"><dsml:name>EndDate</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="EmployeeID" single-value="true" ms-dsml:range-upper="10"><dsml:name>EmployeeID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="JobTitle" single-value="true" ms-dsml:range-upper="255"><dsml:name>JobTitle</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="export_password" single-value="true" ms-dsml:encrypted="true" ms-dsml:export-only="true"><dsml:name>export_password</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type></dsml:directory-schema></dsml:dsml>
+ </schema>
+ <attribute-inclusion><attribute>RecordID</attribute><attribute>Orgunit</attribute><attribute>DisplayName</attribute><attribute>DefaultAlias</attribute><attribute>Domain</attribute><attribute>Active</attribute><attribute>StartDate</attribute><attribute>EndDate</attribute><attribute>EmployeeID</attribute><attribute>JobTitle</attribute><attribute>export_password</attribute></attribute-inclusion>
+ <stay-disconnector><filter-set import-filter="0" cd-object-type="person" type="declared"><filter-alternative id="{9FF1440C-A05F-4301-BA3A-6F3DB2370DC2}"><condition cd-attribute="DefaultAlias" operator="not-present"><value></value></condition></filter-alternative></filter-set></stay-disconnector>
+ <join />
+ <projection />
+ <export-attribute-flow><export-flow-set cd-object-type="person" mv-object-type="person"><export-flow cd-attribute="DisplayName" id="{8CBDA975-1DFB-4B11-994A-6332405FB2EF}" suppress-deletions="true"><direct-mapping><src-attribute>displayName</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="Orgunit" id="{9216338A-E254-4561-A3B6-C7AAAEF37976}" suppress-deletions="true"><direct-mapping><src-attribute>orgUnit</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="EmployeeID" id="{2F145F99-8C46-45CA-8FF6-4220A4F45357}" suppress-deletions="false"><direct-mapping><src-attribute>employeeID</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="Domain" id="{803FEB36-5D23-43A2-834E-5D021CB72CC7}"><constant-mapping><constant-value>Contoso</constant-value></constant-mapping></export-flow><export-flow cd-attribute="JobTitle" id="{A2F30F85-8FAC-4725-B785-D1F3351FD029}" suppress-deletions="true"><direct-mapping><src-attribute>jobTitle</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="DefaultAlias" id="{75A9AD24-19D4-43E2-AD72-22C43DEA6251}" suppress-deletions="true"><direct-mapping><src-attribute>accountName</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="Active" id="{028C57B8-5547-4A35-B590-3B8B4CB01954}" suppress-deletions="true"><scripted-mapping><src-attribute>employeeStatus</src-attribute><script-context>Active</script-context></scripted-mapping></export-flow></export-flow-set></export-attribute-flow>
+ <provisioning-cleanup type="declared"><action>delete-object</action></provisioning-cleanup>
+ <extension><assembly-name>BHOLD FIMEmployeeExtension.dll</assembly-name><application-protection>low</application-protection></extension>
+ <controller-configuration>
+ <application-protection>low</application-protection>
+ <application-architecture>process</application-architecture>
+ <impersonation>
+  <domain>contoso</domain>
+  <user>b1user</user>
+ </impersonation>
+</controller-configuration>
+
+ <description>Updates users in BHold Core</description>
+ <ma-ui-settings><account-joiner-queries><attributes><cs><attribute name="Jobtitle" header="Jobtitle" size="100" /><attribute name="EmployeeID" header="EmployeeID" size="100" /><attribute name="Orgunit" header="Orgunit" size="100" /></cs><mv></mv></attributes><filters max_mv_search_results=""></filters></account-joiner-queries></ma-ui-settings>
+ <private-configuration>
+  <oledbma-configuration><connection-info><authentication>integrated</authentication><provider>SQLOLEDB</provider><server>localhost</server><databasename>b1</databasename><tablename>FIMEmployee</tablename><user>b1user</user><domain>contoso</domain></connection-info><mms-info><column-info><column><name>RecordID</name><data-type>DBTYPE_I4</data-type><length>4</length><isnullable>0</isnullable><isreadonly>1</isreadonly><islongcolumn>0</islongcolumn><mms-type>Number</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>1</exp-conv-flag></column><column><name>Orgunit</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>DisplayName</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>DefaultAlias</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Domain</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Active</name><data-type>DBTYPE_BOOL</data-type><length>2</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>Bool</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>StartDate</name><data-type>DBTYPE_WSTR</data-type><length>10</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>EndDate</name><data-type>DBTYPE_WSTR</data-type><length>10</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>EmployeeID</name><data-type>DBTYPE_WSTR</data-type><length>10</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>JobTitle</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><primary-key><column-name>RecordID</column-name></primary-key></column-info><anchor><attribute>RecordID</attribute></anchor><object-type>person</object-type></mms-info><password-extension-config><password-extension-enabled>0</password-extension-enabled><dll></dll><password-set-enabled></password-set-enabled><password-change-enabled></password-change-enabled><connection-info><connect-to></connect-to><user></user></connection-info><timeout></timeout></password-extension-config><enable-unapplied-merge>0</enable-unapplied-merge></oledbma-configuration>
+ </private-configuration>
+ <SyncConfig-refresh-schema>0</SyncConfig-refresh-schema>
+ <ma-partition-data>
+ <partition>
+  <id>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</id>
+  <name>default</name>
+  <creation-time>2012-09-06 18:41:55.013</creation-time>
+  <last-modification-time>2012-10-05 14:31:21.453</last-modification-time>
+  <version>10</version>
+  <selected>1</selected>
+  <filter>
+   <object-classes>
+    <object-class>person</object-class>
+   </object-classes>
+   <containers>
+    <exclusions/>
+    <inclusions>
+     <inclusion></inclusion>
+    </inclusions>
+   </containers>
+  </filter>
+  <allowed-operations>3</allowed-operations>
+  <current>
+   <batch-number>1577</batch-number>
+   <sequence-number>10219</sequence-number>
+  </current>
+  <last-successful-batch>1576</last-successful-batch>
+  <filter-hints>
+   <object-classes>
+    <object-class>
+     <name>person</name>
+     <hierarchy>
+      <object-class>person</object-class>
+     </hierarchy>
+     <included>1</included>
+    </object-class>
+   </object-classes>
+  </filter-hints>
+ </partition>
+</ma-partition-data>
+
+ <ma-run-data>
+ <run-configuration>
+  <id>{84DE3671-C2EE-4993-B731-380D1C3D373B}</id>
+  <name>_Delta Sync</name>
+  <creation-time>2012-09-28 06:32:18.207</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:32:18.207</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{F61C8CDC-3399-4551-BA77-C6FBCC8D007B}</id>
+  <name>_Export</name>
+  <creation-time>2012-09-28 06:32:18.207</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:32:18.207</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{5A2BE0CB-CB5C-4737-88C1-80487E74AD1D}</id>
+  <name>_Full Import</name>
+  <creation-time>2012-09-28 06:32:18.207</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:32:18.207</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{0D3690B1-8753-44B2-B686-FA4BFDD3C1F1}</id>
+  <name>_Full Sync</name>
+  <creation-time>2012-09-28 06:32:18.207</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:32:18.207</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{DB1EE2C8-354B-44A4-A6CE-2802982AA5BE}</id>
+  <name>EFIDS</name>
+  <creation-time>2012-09-21 22:28:06.543</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-21 22:28:06.543</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{36CD5C19-DDDD-491F-B2D5-7455A7462297}</id>
+  <name>EFIFS</name>
+  <creation-time>2012-09-07 03:48:18.170</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-07 03:48:18.170</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step><step><step-type type="full-import-reevaluate-rules"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{227AADA5-519E-42D3-A594-35C867FC9C21}</id>
+  <name>export</name>
+  <creation-time>2012-09-06 18:41:55.280</creation-time>
+  <version>2</version>
+  <last-modification-time>2012-09-06 23:04:47.453</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{EE930080-4E8B-49EA-A150-DE3671624579}</id>
+  <name>FI</name>
+  <creation-time>2012-09-06 20:38:01.657</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 20:38:01.657</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{5D56608C-F249-4749-8695-13B7F02CBA8F}</id>
+  <name>FS</name>
+  <creation-time>2012-09-06 20:38:01.657</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 20:38:01.657</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{9A44AA68-96AA-4FE5-A7E5-6FDFB6D57ADC}</id>
+  <name>full sync</name>
+  <creation-time>2012-09-06 18:41:55.280</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 18:41:55.280</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold></threshold><partition>{CFDB5FAD-222A-4F03-9661-EA760CDFBFEA}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+</ma-run-data>
+
+ <capabilities-mask>ac05</capabilities-mask>
+ <export-type>2</export-type>
+ <dn-construction><attribute>RecordID</attribute></dn-construction>
+ <password-sync><maximum-retry-count>10</maximum-retry-count><retry-interval>60</retry-interval><allow-low-security>0</allow-low-security></password-sync>
+ <component_mappings />
+</ma-data>
+
+</saved-ma-configuration>

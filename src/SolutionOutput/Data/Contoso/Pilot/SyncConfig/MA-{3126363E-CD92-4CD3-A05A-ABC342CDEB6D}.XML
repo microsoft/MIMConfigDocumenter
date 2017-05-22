@@ -1,0 +1,174 @@
+<saved-ma-configuration server='SERVER1' export-date='2013-03-31 12:24:48.304'>
+<!--WARNING>
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!! The contents of this file should not be edited.
+!! Any such modifications to this file may result in errors during import.
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</WARNING-->
+<ma-data>
+ <format-version>1</format-version>
+ <id>{3126363E-CD92-4CD3-A05A-ABC342CDEB6D}</id>
+ <name>Contoso HR System</name>
+ <category>MSSQL</category>
+ <subtype/>
+ <ma-listname/>
+ <ma-companyname/>
+ <creation-time>2012-09-03 23:31:44.087</creation-time>
+ <last-modification-time>2012-10-10 20:24:21.050</last-modification-time>
+ <version>76</version>
+ <internal-version>0</internal-version>
+ <password-sync-allowed>0</password-sync-allowed>
+ <schema>
+  <dsml:dsml xmlns:dsml="http://www.dsml.org/DSML" xmlns:ms-dsml="http://www.microsoft.com/MMS/DSML"><dsml:directory-schema ms-dsml:no-objectclass-validation="true"><dsml:class id="person" type="structural"><dsml:name>person</dsml:name><dsml:attribute ref="#EmployeeID" required="true" /><dsml:attribute ref="#Firstname" required="false" /><dsml:attribute ref="#MiddleName" required="false" /><dsml:attribute ref="#LastName" required="false" /><dsml:attribute ref="#Suffix" required="false" /><dsml:attribute ref="#PrefName" required="false" /><dsml:attribute ref="#JobTitle" required="false" /><dsml:attribute ref="#Department" required="false" /><dsml:attribute ref="#Company" required="false" /><dsml:attribute ref="#EmployeeType" required="false" /><dsml:attribute ref="#Manager" required="false" /><dsml:attribute ref="#EmployeeStatus" required="false" /><dsml:attribute ref="#CostCenter" required="false" /><dsml:attribute ref="#CostCenterName" required="false" /><dsml:attribute ref="#OfficePhone" required="false" /><dsml:attribute ref="#Fax" required="false" /><dsml:attribute ref="#MobilePhone" required="false" /><dsml:attribute ref="#OfficeLocation" required="false" /><dsml:attribute ref="#Address" required="false" /><dsml:attribute ref="#State" required="false" /><dsml:attribute ref="#City" required="false" /><dsml:attribute ref="#Postcode" required="false" /><dsml:attribute ref="#Country" required="false" /><dsml:attribute ref="#uidNumber" required="true" /><dsml:attribute ref="#email" required="false" /><dsml:attribute ref="#EmployeeStartDate" required="false" /><dsml:attribute ref="#export_password" required="false" /></dsml:class><dsml:attribute-type id="EmployeeID" single-value="true" ms-dsml:immutable="true" ms-dsml:range-upper="50"><dsml:name>EmployeeID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Firstname" single-value="true" ms-dsml:range-upper="50"><dsml:name>Firstname</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="MiddleName" single-value="true" ms-dsml:range-upper="50"><dsml:name>MiddleName</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="LastName" single-value="true" ms-dsml:range-upper="50"><dsml:name>LastName</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Suffix" single-value="true" ms-dsml:range-upper="50"><dsml:name>Suffix</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="PrefName" single-value="true" ms-dsml:range-upper="50"><dsml:name>PrefName</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="JobTitle" single-value="true" ms-dsml:range-upper="50"><dsml:name>JobTitle</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Department" single-value="true" ms-dsml:range-upper="50"><dsml:name>Department</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Company" single-value="true" ms-dsml:range-upper="50"><dsml:name>Company</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="EmployeeType" single-value="true" ms-dsml:range-upper="50"><dsml:name>EmployeeType</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Manager" single-value="true" ms-dsml:range-upper="50"><dsml:name>Manager</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.12</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="EmployeeStatus" single-value="true" ms-dsml:range-upper="50"><dsml:name>EmployeeStatus</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="CostCenter" single-value="true" ms-dsml:range-upper="50"><dsml:name>CostCenter</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="CostCenterName" single-value="true" ms-dsml:range-upper="50"><dsml:name>CostCenterName</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="OfficePhone" single-value="true" ms-dsml:range-upper="50"><dsml:name>OfficePhone</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Fax" single-value="true" ms-dsml:range-upper="50"><dsml:name>Fax</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="MobilePhone" single-value="true" ms-dsml:range-upper="50"><dsml:name>MobilePhone</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="OfficeLocation" single-value="true" ms-dsml:range-upper="50"><dsml:name>OfficeLocation</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Address" single-value="true" ms-dsml:range-upper="50"><dsml:name>Address</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="State" single-value="true" ms-dsml:range-upper="50"><dsml:name>State</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="City" single-value="true" ms-dsml:range-upper="50"><dsml:name>City</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Postcode" single-value="true" ms-dsml:range-upper="50"><dsml:name>Postcode</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="Country" single-value="true" ms-dsml:range-upper="50"><dsml:name>Country</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="uidNumber" single-value="true" user-modification="false" ms-dsml:range-upper="2147483647" ms-dsml:range-lower="-2147483648"><dsml:name>uidNumber</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.27</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="email" single-value="true" ms-dsml:range-upper="50"><dsml:name>email</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="EmployeeStartDate" single-value="true" ms-dsml:range-upper="50"><dsml:name>EmployeeStartDate</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="export_password" single-value="true" ms-dsml:encrypted="true" ms-dsml:export-only="true"><dsml:name>export_password</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type></dsml:directory-schema></dsml:dsml>
+ </schema>
+ <attribute-inclusion><attribute>EmployeeID</attribute><attribute>Firstname</attribute><attribute>MiddleName</attribute><attribute>LastName</attribute><attribute>Suffix</attribute><attribute>PrefName</attribute><attribute>JobTitle</attribute><attribute>Department</attribute><attribute>Company</attribute><attribute>EmployeeType</attribute><attribute>Manager</attribute><attribute>EmployeeStatus</attribute><attribute>CostCenter</attribute><attribute>CostCenterName</attribute><attribute>OfficePhone</attribute><attribute>Fax</attribute><attribute>MobilePhone</attribute><attribute>OfficeLocation</attribute><attribute>Address</attribute><attribute>State</attribute><attribute>City</attribute><attribute>Postcode</attribute><attribute>Country</attribute><attribute>uidNumber</attribute><attribute>email</attribute><attribute>EmployeeStartDate</attribute><attribute>export_password</attribute></attribute-inclusion>
+ <stay-disconnector />
+ <join><join-profile cd-object-type="person"><join-criterion id="{8CB7939D-0A68-4193-AFF0-DFE34830FB9F}"><search><attribute-mapping mv-attribute="employeeID"><direct-mapping><src-attribute>EmployeeID</src-attribute></direct-mapping></attribute-mapping></search><resolution type="none"><script-context></script-context></resolution></join-criterion></join-profile><join-profile cd-object-type="person"><join-criterion join-cri-type="sync-rule" id="{B2E15666-49AE-447C-A92E-ECE3C5420B25}" sync-rule-id="{76D29E94-61F8-E111-8BF8-00155DDCA745}"><search mv-object-type="person"><attribute-mapping mv-attribute="employeeID"><direct-mapping><src-attribute>EmployeeID</src-attribute></direct-mapping></attribute-mapping></search><resolution type="none"><script-context></script-context></resolution></join-criterion></join-profile></join>
+ <projection>
+ <class-mapping cd-object-type="person" type="sync-rule" id="{BF6AFB55-24BA-45D3-9070-8D2B1E78DE22}" sync-rule-id="{76D29E94-61F8-E111-8BF8-00155DDCA745}">
+  <mv-object-type>person</mv-object-type>
+ </class-mapping>
+</projection>
+
+ <export-attribute-flow><export-flow-set cd-object-type="person" mv-object-type="person"><export-flow cd-attribute="MobilePhone" id="{2EB2647D-3ED4-45B3-91C1-96DC3B752C4A}"><sync-rule-mapping mapping-type="direct" sync-rule-id="{72054329-76F8-E111-8BF8-00155DDCA745}" sync-rule-mapping-id="{EE4BC392-B5F8-47A9-ADE8-98A676476725}" initial-flow-only="false" is-existence-test="false"><src-attribute>mobile</src-attribute></sync-rule-mapping></export-flow><export-flow cd-attribute="email" id="{EB603E09-495B-46BB-8C02-965AD9B5B5F4}"><sync-rule-mapping mapping-type="direct" sync-rule-id="{72054329-76F8-E111-8BF8-00155DDCA745}" sync-rule-mapping-id="{7B8CBE3D-ED01-4C55-997F-266252491842}" initial-flow-only="false" is-existence-test="false"><src-attribute>mail</src-attribute></sync-rule-mapping></export-flow></export-flow-set></export-attribute-flow>
+ <provisioning-cleanup type="declared"><action>make-normal-disconnector</action></provisioning-cleanup>
+ <extension />
+ <controller-configuration>
+ <application-protection>low</application-protection>
+ <application-architecture>process</application-architecture>
+ <impersonation>
+  <domain>contoso</domain>
+  <user>fim-install</user>
+ </impersonation>
+</controller-configuration>
+
+ <description>Reads and updates users in HR</description>
+ <ma-ui-settings><account-joiner-queries><attributes><cs><attribute name="StaffID" header="StaffID" size="100" /><attribute name="StaffType" header="StaffType" size="100" /><attribute name="Title" header="Title" size="100" /></cs><mv></mv></attributes><filters max_mv_search_results=""></filters></account-joiner-queries></ma-ui-settings>
+ <private-configuration>
+  <oledbma-configuration><connection-info><authentication>integrated</authentication><provider>SQLOLEDB</provider><server>server1</server><databasename>HRData</databasename><tablename>tblHR</tablename><user>fim-install</user><domain>contoso</domain></connection-info><mms-info><column-info><column><name>EmployeeID</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>0</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>1</exp-conv-flag></column><column><name>Firstname</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>MiddleName</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>LastName</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Suffix</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>PrefName</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>JobTitle</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Department</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Company</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>EmployeeType</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Manager</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type dn="1">String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>EmployeeStatus</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>CostCenter</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>CostCenterName</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>OfficePhone</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Fax</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>MobilePhone</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>OfficeLocation</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Address</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>State</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>City</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Postcode</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>Country</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>uidNumber</name><data-type>DBTYPE_I4</data-type><length>4</length><isnullable>0</isnullable><isreadonly>1</isreadonly><islongcolumn>0</islongcolumn><mms-type>Number</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>1</exp-conv-flag></column><column><name>email</name><data-type>DBTYPE_STR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>EmployeeStartDate</name><data-type>DBTYPE_WSTR</data-type><length>50</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><primary-key></primary-key></column-info><anchor><attribute>EmployeeID</attribute></anchor><object-type>person</object-type></mms-info><password-extension-config><password-extension-enabled>0</password-extension-enabled><dll></dll><password-set-enabled></password-set-enabled><password-change-enabled></password-change-enabled><connection-info><connect-to></connect-to><user></user></connection-info><timeout></timeout></password-extension-config><enable-unapplied-merge>0</enable-unapplied-merge></oledbma-configuration>
+ </private-configuration>
+ <SyncConfig-refresh-schema>0</SyncConfig-refresh-schema>
+ <ma-partition-data>
+ <partition>
+  <id>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</id>
+  <name>default</name>
+  <creation-time>2012-09-03 23:31:44.087</creation-time>
+  <last-modification-time>2012-10-10 20:24:21.050</last-modification-time>
+  <version>9</version>
+  <selected>1</selected>
+  <filter>
+   <object-classes>
+    <object-class>person</object-class>
+   </object-classes>
+   <containers>
+    <exclusions/>
+    <inclusions>
+     <inclusion></inclusion>
+    </inclusions>
+   </containers>
+  </filter>
+  <allowed-operations>1</allowed-operations>
+  <current>
+   <batch-number>1523</batch-number>
+   <sequence-number>2781</sequence-number>
+  </current>
+  <last-successful-batch>1522</last-successful-batch>
+  <filter-hints>
+   <object-classes>
+    <object-class>
+     <name>person</name>
+     <hierarchy>
+      <object-class>person</object-class>
+     </hierarchy>
+     <included>1</included>
+    </object-class>
+   </object-classes>
+  </filter-hints>
+ </partition>
+</ma-partition-data>
+
+ <ma-run-data>
+ <run-configuration>
+  <id>{00B06242-7766-4702-8170-1F377AA6A030}</id>
+  <name>_Delta Sync</name>
+  <creation-time>2012-09-28 06:25:30.090</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:25:30.090</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{6EAE3B06-2580-4843-BFC9-88920D4E70CB}</id>
+  <name>_Export</name>
+  <creation-time>2012-09-28 06:25:30.090</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:25:30.090</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{471F51EA-72F8-444D-B600-D1AFADE19FD5}</id>
+  <name>_Full Import</name>
+  <creation-time>2012-09-28 06:25:30.090</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:25:30.090</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{4F43981F-6453-4E10-8186-E47FB12C688D}</id>
+  <name>_Full Sync</name>
+  <creation-time>2012-09-28 06:25:30.090</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:25:30.090</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{9CB2BA63-FC74-40B0-B2B4-B57453E466B7}</id>
+  <name>DS</name>
+  <creation-time>2012-09-21 21:53:41.120</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-21 21:53:41.120</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{9738AA36-42CA-4558-A215-B74B75DB38C2}</id>
+  <name>EFIDS</name>
+  <creation-time>2012-09-21 21:17:10.743</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-21 21:17:10.743</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{4EF1A953-7D02-4B52-8644-FB0A4BDF5DC3}</id>
+  <name>Export</name>
+  <creation-time>2012-09-07 03:51:25.210</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-07 03:51:25.210</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{77328CE1-5CC6-44D5-AD44-A3D54B665475}</id>
+  <name>FS</name>
+  <creation-time>2012-09-21 21:17:10.743</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-21 21:17:10.743</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{4C029911-7C38-4188-9C2D-165B231AE698}</id>
+  <name>Full Import</name>
+  <creation-time>2012-09-03 23:46:40.370</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-03 23:46:40.370</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{8DE5A864-4877-4128-BA59-81CEAA8E9B9B}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+</ma-run-data>
+
+ <capabilities-mask>ac05</capabilities-mask>
+ <export-type>2</export-type>
+ <dn-construction><attribute>EmployeeID</attribute></dn-construction>
+ <password-sync><maximum-retry-count>10</maximum-retry-count><retry-interval>60</retry-interval><allow-low-security>0</allow-low-security></password-sync>
+ <component_mappings />
+</ma-data>
+
+</saved-ma-configuration>

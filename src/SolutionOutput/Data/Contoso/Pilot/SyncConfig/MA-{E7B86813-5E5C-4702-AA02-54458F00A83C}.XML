@@ -1,0 +1,153 @@
+<saved-ma-configuration server='SERVER1' export-date='2013-03-31 12:24:48.304'>
+<!--WARNING>
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!! The contents of this file should not be edited.
+!! Any such modifications to this file may result in errors during import.
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</WARNING-->
+<ma-data>
+ <format-version>1</format-version>
+ <id>{E7B86813-5E5C-4702-AA02-54458F00A83C}</id>
+ <name>Bhold FimOrgunit</name>
+ <category>MSSQL</category>
+ <subtype/>
+ <ma-listname/>
+ <ma-companyname/>
+ <creation-time>2012-09-06 02:20:06.337</creation-time>
+ <last-modification-time>2012-09-26 18:21:19.853</last-modification-time>
+ <version>6</version>
+ <internal-version>0</internal-version>
+ <password-sync-allowed>0</password-sync-allowed>
+ <schema>
+  <dsml:dsml xmlns:dsml="http://www.dsml.org/DSML" xmlns:ms-dsml="http://www.microsoft.com/MMS/DSML"><dsml:directory-schema ms-dsml:no-objectclass-validation="true"><dsml:class id="organization" type="structural"><dsml:name>organization</dsml:name><dsml:attribute ref="#RecordID" required="true" /><dsml:attribute ref="#OrgunitID" required="false" /><dsml:attribute ref="#ParentID" required="false" /><dsml:attribute ref="#DisplayName" required="false" /><dsml:attribute ref="#export_password" required="false" /></dsml:class><dsml:attribute-type id="RecordID" single-value="true" user-modification="false" ms-dsml:immutable="true" ms-dsml:range-upper="2147483647" ms-dsml:range-lower="-2147483648"><dsml:name>RecordID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.27</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="OrgunitID" single-value="true" ms-dsml:range-upper="255"><dsml:name>OrgunitID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="ParentID" single-value="true" ms-dsml:range-upper="255"><dsml:name>ParentID</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="DisplayName" single-value="true" ms-dsml:range-upper="255"><dsml:name>DisplayName</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type><dsml:attribute-type id="export_password" single-value="true" ms-dsml:encrypted="true" ms-dsml:export-only="true"><dsml:name>export_password</dsml:name><dsml:syntax>1.3.6.1.4.1.1466.115.121.1.15</dsml:syntax></dsml:attribute-type></dsml:directory-schema></dsml:dsml>
+ </schema>
+ <attribute-inclusion><attribute>RecordID</attribute><attribute>OrgunitID</attribute><attribute>ParentID</attribute><attribute>DisplayName</attribute><attribute>export_password</attribute></attribute-inclusion>
+ <stay-disconnector />
+ <join />
+ <projection />
+ <export-attribute-flow><export-flow-set cd-object-type="organization" mv-object-type="organization"><export-flow cd-attribute="OrgunitID" id="{650C1880-456B-4042-BE30-A6607E683F42}" suppress-deletions="true"><direct-mapping><src-attribute>o</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="ParentID" id="{3575096F-C2FF-44B0-9530-BA04CB9F720A}" suppress-deletions="true"><direct-mapping><src-attribute>ParentID</src-attribute></direct-mapping></export-flow><export-flow cd-attribute="DisplayName" id="{527C77F2-C819-49CD-B185-30FCCA4B5052}" suppress-deletions="true"><direct-mapping><src-attribute>displayName</src-attribute></direct-mapping></export-flow></export-flow-set></export-attribute-flow>
+ <provisioning-cleanup type="declared"><action>make-normal-disconnector</action></provisioning-cleanup>
+ <extension />
+ <controller-configuration>
+ <application-protection>high</application-protection>
+ <application-architecture>process</application-architecture>
+ <impersonation>
+  <domain>contoso</domain>
+  <user>b1user</user>
+ </impersonation>
+</controller-configuration>
+
+ <description>Updates BHold Org Units</description>
+ <ma-ui-settings><account-joiner-queries><attributes><cs><attribute name="RecordID" header="RecordID" size="100" /><attribute name="OrgunitID" header="OrgunitID" size="100" /><attribute name="ParentID" header="ParentID" size="100" /></cs><mv></mv></attributes><filters max_mv_search_results=""></filters></account-joiner-queries></ma-ui-settings>
+ <private-configuration>
+  <oledbma-configuration><connection-info><authentication>integrated</authentication><provider>SQLOLEDB</provider><server>localhost</server><databasename>B1</databasename><tablename>fimOrgunit</tablename><user>b1user</user><domain>contoso</domain></connection-info><mms-info><column-info><column><name>RecordID</name><data-type>DBTYPE_I4</data-type><length>4</length><isnullable>0</isnullable><isreadonly>1</isreadonly><islongcolumn>0</islongcolumn><mms-type>Number</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>1</exp-conv-flag></column><column><name>OrgunitID</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>ParentID</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><column><name>DisplayName</name><data-type>DBTYPE_WSTR</data-type><length>255</length><isnullable>1</isnullable><isreadonly>0</isreadonly><islongcolumn>0</islongcolumn><mms-type>String</mms-type><imp-conv-flag>1</imp-conv-flag><exp-conv-flag>0</exp-conv-flag></column><primary-key></primary-key></column-info><anchor><attribute>RecordID</attribute></anchor><object-type>organization</object-type></mms-info><password-extension-config><password-extension-enabled>0</password-extension-enabled><dll></dll><password-set-enabled></password-set-enabled><password-change-enabled></password-change-enabled><connection-info><connect-to></connect-to><user></user></connection-info><timeout></timeout></password-extension-config><enable-unapplied-merge>0</enable-unapplied-merge></oledbma-configuration>
+ </private-configuration>
+ <SyncConfig-refresh-schema>0</SyncConfig-refresh-schema>
+ <ma-partition-data>
+ <partition>
+  <id>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</id>
+  <name>default</name>
+  <creation-time>2012-09-06 02:20:06.337</creation-time>
+  <last-modification-time>2012-09-26 18:21:19.853</last-modification-time>
+  <version>6</version>
+  <selected>1</selected>
+  <filter>
+   <object-classes>
+    <object-class>organization</object-class>
+   </object-classes>
+   <containers>
+    <exclusions/>
+    <inclusions>
+     <inclusion></inclusion>
+    </inclusions>
+   </containers>
+  </filter>
+  <allowed-operations>3</allowed-operations>
+  <current>
+   <batch-number>4</batch-number>
+   <sequence-number>322</sequence-number>
+  </current>
+  <last-successful-batch>3</last-successful-batch>
+  <filter-hints>
+   <object-classes>
+    <object-class>
+     <name>organization</name>
+     <hierarchy>
+      <object-class>organization</object-class>
+     </hierarchy>
+     <included>1</included>
+    </object-class>
+   </object-classes>
+  </filter-hints>
+ </partition>
+</ma-partition-data>
+
+ <ma-run-data>
+ <run-configuration>
+  <id>{24C0C025-F59E-4A33-8AD3-8D56C2C334AF}</id>
+  <name>_Delta Sync</name>
+  <creation-time>2012-09-28 06:31:00.053</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:31:00.053</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>apply-pending</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{8F5EA499-E198-4B5D-ABC7-354887789EAB}</id>
+  <name>_Export</name>
+  <creation-time>2012-09-28 06:31:00.053</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:31:00.053</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{EDFA0134-F5A2-4812-B40B-3B0AFF809FC0}</id>
+  <name>_Full Import</name>
+  <creation-time>2012-09-28 06:31:00.053</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:31:00.053</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{2848E232-8359-456E-A8DF-182AC6AF2EA3}</id>
+  <name>_Full Sync</name>
+  <creation-time>2012-09-28 06:31:00.053</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-28 06:31:00.053</last-modification-time>
+  <configuration><step><step-type type="apply-rules"><apply-rules-subtype>reevaluate-flow-connectors</apply-rules-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{8F0F40C5-780A-4263-A4E8-EFE8BBF4ED27}</id>
+  <name>export</name>
+  <creation-time>2012-09-06 02:20:06.350</creation-time>
+  <version>2</version>
+  <last-modification-time>2012-09-06 02:53:35.637</last-modification-time>
+  <configuration><step><step-type type="export"></step-type><threshold><batch-size>1</batch-size></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{E820ACEC-C11F-4353-995D-13203A363076}</id>
+  <name>FI</name>
+  <creation-time>2012-09-06 02:53:48.353</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 02:53:48.353</last-modification-time>
+  <configuration><step><step-type type="full-import"><import-subtype>to-cs</import-subtype></step-type><threshold><batch-size>1</batch-size></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+ <run-configuration>
+  <id>{F3E3A40B-3A96-4368-B55C-E28139ABC560}</id>
+  <name>ful sync</name>
+  <creation-time>2012-09-06 02:20:06.350</creation-time>
+  <version>1</version>
+  <last-modification-time>2012-09-06 02:20:06.350</last-modification-time>
+  <configuration><step><step-type type="full-import-reevaluate-rules"></step-type><threshold></threshold><partition>{0FCE3F6B-C0CA-43BC-823E-94470572CB09}</partition><custom-data></custom-data></step></configuration>
+ </run-configuration>
+</ma-run-data>
+
+ <capabilities-mask>ac05</capabilities-mask>
+ <export-type>2</export-type>
+ <dn-construction><attribute>RecordID</attribute></dn-construction>
+ <password-sync><maximum-retry-count>10</maximum-retry-count><retry-interval>60</retry-interval><allow-low-security>0</allow-low-security></password-sync>
+ <component_mappings />
+</ma-data>
+
+</saved-ma-configuration>
