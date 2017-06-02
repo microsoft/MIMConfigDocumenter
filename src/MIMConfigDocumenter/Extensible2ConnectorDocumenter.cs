@@ -130,6 +130,7 @@ namespace MIMConfigDocumenter
         /// <param name="parameterDefinitions">The config parameter definition node for a configuration page.</param>
         /// <param name="parameterValues">he config parameter values node for the corresponding configuration page.</param>
         /// <returns>The config parameter values table.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed.")]
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "No good reason to call Dispose() on DataTable and DataColumn.")]
         protected DataTable GetExtensible2ConfigParametersTable(IEnumerable<XElement> parameterDefinitions, IEnumerable<XElement> parameterValues)
         {

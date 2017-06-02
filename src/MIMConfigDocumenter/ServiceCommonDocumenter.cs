@@ -371,6 +371,11 @@ namespace MIMConfigDocumenter
         /// <returns>The XElement without any namespaces.</returns>
         protected static XElement RemoveAllNamespaces(XElement inputElement)
         {
+            if (inputElement == null)
+            {
+                return null;
+            }
+
             var stripped = new XElement(inputElement.Name.LocalName);
 
             foreach (var attribute in inputElement.Attributes().Where(attribute => !attribute.IsNamespaceDeclaration))
@@ -433,8 +438,13 @@ namespace MIMConfigDocumenter
         /// </summary>
         /// <param name="changeObject">The change object.</param>
         /// <returns>The display name of the specified change object.</returns>
-        protected string GetChangeObjectDisplayName(XElement changeObject)
+        protected string GetChangeObjectDisplayName(XContainer changeObject)
         {
+            if (changeObject == null)
+            {
+                return string.Empty;
+            }
+
             var sourceObjectIdentifier = (string)changeObject.Element("SourceObjectIdentifier");
             var targetObjectIdentifier = (string)changeObject.Element("TargetObjectIdentifier");
 
@@ -704,6 +714,11 @@ namespace MIMConfigDocumenter
 
             try
             {
+                if (attributeValue == null)
+                {
+                    return;
+                }
+
                 attributeValue.NewId = attributeValue.NewValue;
                 attributeValue.OldId = attributeValue.OldValue;
 
@@ -1006,10 +1021,13 @@ namespace MIMConfigDocumenter
 
             try
             {
-                foreach (var setting in settings)
+                if (settings != null)
                 {
-                    var attributeChange = this.GetAttributeChange(setting.Value);
-                    this.AddSimpleMultivalueOrderedRows(setting.Key, attributeChange);
+                    foreach (var setting in settings)
+                    {
+                        var attributeChange = this.GetAttributeChange(setting.Value);
+                        this.AddSimpleMultivalueOrderedRows(setting.Key, attributeChange);
+                    }
                 }
 
                 this.DiffgramDataSet = Documenter.SortDataSet(this.DiffgramDataSet);
@@ -1033,9 +1051,12 @@ namespace MIMConfigDocumenter
             var rowIndex = diffgramTable.Rows.Count;
             Documenter.AddRow(diffgramTable, new object[] { rowIndex, setting, DataRowState.Unchanged });
 
-            for (var attributeValueIndex = 0; attributeValueIndex < attributeChange.AttributeValues.Count; ++attributeValueIndex)
+            if (attributeChange != null)
             {
-                Documenter.AddRow(diffgramTable2, new object[] { rowIndex, attributeValueIndex, attributeChange.AttributeValues[attributeValueIndex].NewValueText, attributeChange.AttributeValues[attributeValueIndex].NewValue, attributeChange.AttributeValues[attributeValueIndex].ValueModificationType, attributeChange.AttributeValues[attributeValueIndex].OldValueText, attributeChange.AttributeValues[attributeValueIndex].OldValue });
+                for (var attributeValueIndex = 0; attributeValueIndex < attributeChange.AttributeValues.Count; ++attributeValueIndex)
+                {
+                    Documenter.AddRow(diffgramTable2, new object[] { rowIndex, attributeValueIndex, attributeChange.AttributeValues[attributeValueIndex].NewValueText, attributeChange.AttributeValues[attributeValueIndex].NewValue, attributeChange.AttributeValues[attributeValueIndex].ValueModificationType, attributeChange.AttributeValues[attributeValueIndex].OldValueText, attributeChange.AttributeValues[attributeValueIndex].OldValue });
+                }
             }
         }
 

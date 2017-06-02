@@ -487,6 +487,11 @@ namespace MIMConfigDocumenter
 
             try
             {
+                if (htmlWriter == null)
+                {
+                    throw new ArgumentNullException("htmlWriter");
+                }
+
                 htmlWriter.WriteBeginTag("a");
                 htmlWriter.WriteAttribute("class", cellClass);
                 htmlWriter.WriteAttribute("href", "#" + Documenter.GetBookmarkCode(bookmark, sectionGuid));
@@ -586,6 +591,11 @@ namespace MIMConfigDocumenter
         /// <param name="diffgramDataSet">The diffgram data set.</param>
         protected static void AddRowVisibilityStatusColumn(DataSet diffgramDataSet)
         {
+            if (diffgramDataSet == null)
+            {
+                throw new ArgumentNullException("diffgramDataSet");
+            }
+
             diffgramDataSet.ExtendedProperties.Add(Documenter.CanHide, true);
 
             // Loop all ignore last table which is PrintSetting table
@@ -790,6 +800,11 @@ namespace MIMConfigDocumenter
         /// <returns>The diffgram table structure based on input table.</returns>
         protected static DataTable CreateDiffgramTable(DataTable dataTable)
         {
+            if (dataTable == null)
+            {
+                throw new ArgumentNullException("dataTable");
+            }
+
             var diffgramTable = dataTable.Clone();
             diffgramTable.Columns.Add(Documenter.RowStateColumn);
             foreach (DataColumn column in dataTable.Columns)
@@ -1070,6 +1085,7 @@ namespace MIMConfigDocumenter
         /// <param name="table">The table.</param>
         /// <param name="row">The row.</param>
         /// <param name="vanityRow">if set to <c>true</c>, the row is not printed if it appears as a deleted row in the diffgram.</param>
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Reviewed.")]
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "Reviewed.")]
         protected static void AddRow(DataTable table, object row, bool vanityRow)
         {
@@ -1386,7 +1402,7 @@ namespace MIMConfigDocumenter
             try
             {
                 this.ReportWriter.WriteFullBeginTag("strong");
-                this.ReportWriter.Write("Only Show Changes:");
+                this.ReportWriter.Write("Apply 'Only Show Changes' Filter to SyncConfig:");
                 this.ReportWriter.WriteEndTag("strong");
 
                 this.ReportWriter.WriteBeginTag("input");
@@ -1853,6 +1869,11 @@ namespace MIMConfigDocumenter
         /// <param name="cellClass">The cell class.</param>
         protected void WriteCellText(string cellText, int? bookmarkIndex, int? jumpToBookmarkIndex, DataRow row, string cellClass)
         {
+            if (row == null)
+            {
+                return;
+            }
+
             var bookmark = bookmarkIndex != null ? Convert.ToString(row[(int)bookmarkIndex], CultureInfo.InvariantCulture) : null;
             var jumpToBookmark = jumpToBookmarkIndex != null ? Convert.ToString(row[(int)jumpToBookmarkIndex], CultureInfo.InvariantCulture) : null;
 
@@ -1974,7 +1995,10 @@ namespace MIMConfigDocumenter
 
             #region rows
 
-            this.WriteRows(dataTable.Rows);
+            if (dataTable != null && dataTable.Rows.Count > 0)
+            {
+                this.WriteRows(dataTable.Rows);
+            }
 
             #endregion rows
 

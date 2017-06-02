@@ -291,3 +291,4 @@ __pycache__/
 /src/SolutionOutput/MIMConfigDocumenter.psm1
 /src/SolutionOutput/MIMConfigDocumenter.dll
 /src/SolutionOutput/InvokeDocumenter-Contoso.ps1
+/src/SolutionOutput/MIMConfigDocumenter.zip

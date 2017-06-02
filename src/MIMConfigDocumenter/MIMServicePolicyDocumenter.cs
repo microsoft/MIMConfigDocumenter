@@ -1010,27 +1010,31 @@ namespace MIMConfigDocumenter
             var operationChange = new AttributeValueChange();
             operationChange.NewValue = "No";
             operationChange.OldValue = "No";
-            operationChange.ValueModificationType = actionTypeChange.AttributeModificationType == DataRowState.Modified ? DataRowState.Unchanged : actionTypeChange.AttributeModificationType;
-            foreach (var valueChange in actionTypeChange.AttributeValues)
-            {
-                if (valueChange.NewValue == actionType)
-                {
-                    operationChange.ValueModificationType = valueChange.ValueModificationType;
-                    switch (operationChange.ValueModificationType)
-                    {
-                        case DataRowState.Added:
-                            operationChange.NewValue = "Yes";
-                            break;
-                        case DataRowState.Deleted:
-                            operationChange.OldValue = "Yes";
-                            break;
-                        default:
-                            operationChange.NewValue = "Yes";
-                            operationChange.OldValue = "Yes";
-                            break;
-                    }
+            operationChange.ValueModificationType = actionTypeChange == null || actionTypeChange.AttributeModificationType == DataRowState.Modified ? DataRowState.Unchanged : actionTypeChange.AttributeModificationType;
 
-                    break;
+            if (actionTypeChange != null)
+            {
+                foreach (var valueChange in actionTypeChange.AttributeValues)
+                {
+                    if (valueChange.NewValue == actionType)
+                    {
+                        operationChange.ValueModificationType = valueChange.ValueModificationType;
+                        switch (operationChange.ValueModificationType)
+                        {
+                            case DataRowState.Added:
+                                operationChange.NewValue = "Yes";
+                                break;
+                            case DataRowState.Deleted:
+                                operationChange.OldValue = "Yes";
+                                break;
+                            default:
+                                operationChange.NewValue = "Yes";
+                                operationChange.OldValue = "Yes";
+                                break;
+                        }
+
+                        break;
+                    }
                 }
             }
 
@@ -1584,23 +1588,26 @@ namespace MIMConfigDocumenter
         /// <param name="hashtable">The hashtable element of the activity XOML.</param>
         /// <param name="activityIndex">The index of the activity in the workflow.</param>
         /// <param name="sectionIndex">The index of the section to which the table belongs.</param>
-        protected void FillWorkflowActivityValueExpressions(DataTable activityValueExpressionsTable, XElement hashtable, int activityIndex, int sectionIndex)
+        protected void FillWorkflowActivityValueExpressions(DataTable activityValueExpressionsTable, XContainer hashtable, int activityIndex, int sectionIndex)
         {
-            var hashtableKeyCount = hashtable.Nodes().Count() / 3;
-
-            for (var expressionIndex = 0; expressionIndex < hashtableKeyCount; ++expressionIndex)
+            if (activityValueExpressionsTable != null && hashtable != null)
             {
-                var valueExpression = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":0']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
-                var target = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":1']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
-                var allowNull = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":2']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+                var hashtableKeyCount = hashtable.Nodes().Count() / 3;
 
-                if (activityValueExpressionsTable.Columns.Count == 4)
+                for (var expressionIndex = 0; expressionIndex < hashtableKeyCount; ++expressionIndex)
                 {
-                    Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null });
-                }
-                else
-                {
-                    Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, allowNull != null ? allowNull.Value : null });
+                    var valueExpression = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":0']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+                    var target = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":1']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+                    var allowNull = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":2']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+
+                    if (activityValueExpressionsTable.Columns.Count == 4)
+                    {
+                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null });
+                    }
+                    else
+                    {
+                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, allowNull != null ? allowNull.Value : null });
+                    }
                 }
             }
         }
@@ -1611,7 +1618,7 @@ namespace MIMConfigDocumenter
         /// <param name="activityConfigurationMultivaluesTable">The multi-values list table to fill.</param>
         /// <param name="list">The Array or ArrayList element of the activity XOML.</param>
         /// <param name="activityIndex">The index of the current activity in the workflow.</param>
-        protected void FillWorkflowActivityExpressionsList(DataTable activityConfigurationMultivaluesTable, XElement list, int activityIndex)
+        protected void FillWorkflowActivityExpressionsList(DataTable activityConfigurationMultivaluesTable, XContainer list, int activityIndex)
         {
             Logger.Instance.WriteMethodEntry();
             try
@@ -1992,6 +1999,11 @@ namespace MIMConfigDocumenter
 
             try
             {
+                if (tableSubHeader == null)
+                {
+                    return;
+                }
+
                 this.DiffgramDataSet = tableSubHeader.Count == 3 ? this.DiffgramDataSets[4] : this.DiffgramDataSets[3];
 
                 int currentTableIndex = 1;
@@ -2321,6 +2333,11 @@ namespace MIMConfigDocumenter
         /// <param name="systemScopingFiltersChange">The inbound / outbound system scoping filter attribute change.</param>
         protected void ProcessSynchronizationRuleSystemScopingFilter(AttributeChange systemScopingFiltersChange)
         {
+            if (systemScopingFiltersChange == null)
+            {
+                return;
+            }
+
             this.CreateSimpleOrderedSettingsDataSets(4, 3, false); // 1 = Display Order Control, 2 = Attribute, 3 = Operator, 4 = Value
             this.FillSynchronizationRuleSystemScopingFiltersDataSet(systemScopingFiltersChange.NewValue, true);
             this.FillSynchronizationRuleSystemScopingFiltersDataSet(systemScopingFiltersChange.OldValue, false);
@@ -2394,6 +2411,11 @@ namespace MIMConfigDocumenter
         /// <param name="relationshipCriteriaChange">The Synchronization Rule Relationship Criteria attribute change.</param>
         protected void ProcessSynchronizationRuleRelationshipCriteria(AttributeChange relationshipCriteriaChange)
         {
+            if (relationshipCriteriaChange == null)
+            {
+                return;
+            }
+
             this.CreateSimpleOrderedSettingsDataSets(4, 3, false); // 1 = Display Order Control, 2 = Attribute, 3 = Operator, 4 = Value
             this.FillSynchronizationRuleRelationshipCriteriaDataSet(relationshipCriteriaChange.NewValue, true);
             this.FillSynchronizationRuleRelationshipCriteriaDataSet(relationshipCriteriaChange.OldValue, false);
@@ -2463,6 +2485,11 @@ namespace MIMConfigDocumenter
         /// <param name="synchronizationRuleParametersChange">The  Synchronization Rule Workflow Parameters attribute change.</param>
         protected void ProcessSynchronizationRuleWorkflowParameters(AttributeChange synchronizationRuleParametersChange)
         {
+            if (synchronizationRuleParametersChange == null)
+            {
+                return;
+            }
+
             this.CreateSimpleSettingsDataSets(2); // 1 = Parameter Name, 2 = Parameter Type
             this.FillSynchronizationRuleWorkflowParametersDataSet(synchronizationRuleParametersChange.NewValue, true);
             this.FillSynchronizationRuleWorkflowParametersDataSet(synchronizationRuleParametersChange.OldValue, false);
@@ -2532,6 +2559,11 @@ namespace MIMConfigDocumenter
         /// <returns>The parsed function expression string.</returns>
         protected string ParseSynchronizationRuleFunctionExpression(XElement function)
         {
+            if (function == null)
+            {
+                return string.Empty;
+            }
+
             var customExpression = ((string)function.Attribute("isCustomExpression") ?? string.Empty).Equals("true", StringComparison.OrdinalIgnoreCase) ? true : false;
             var functionName = (string)function.Attribute("id") ?? string.Empty;
 
