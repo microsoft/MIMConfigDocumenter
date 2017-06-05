@@ -825,7 +825,7 @@ namespace MIMConfigDocumenter
                 var sectionTitle = "Metaverse Object Deletion Rules";
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
+                if (this.DiffgramDataSets.Count != 0)
                 {
                     var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Object Type", 15 }, { "Deletion Rule Type", 60 }, { "Management Agents", 35 } });
 
