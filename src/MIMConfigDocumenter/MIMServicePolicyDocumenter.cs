@@ -443,6 +443,30 @@ namespace MIMConfigDocumenter
 
         #region Sets
 
+        /// <summary>
+        /// Gets the value of filter string
+        /// </summary>
+        /// <param name="filter">The set filter xml string</param>
+        /// <returns>The value of filter string</returns>
+        protected string GetFilterText(string filter)
+        {
+            if (!string.IsNullOrEmpty(filter))
+            {
+                try
+                {
+                    var xmlFilter = XElement.Parse(filter);
+                    filter = xmlFilter.Value;
+                }
+                catch (Exception e)
+                {
+                    var info = string.Format(CultureInfo.InvariantCulture, "Unable to Parse Filter '{0}'. Error {1}.", filter, e.ToString());
+                    Logger.Instance.WriteInfo(info);
+                }
+            }
+
+            return filter;
+        }
+
         #region Sets Summary
 
         /// <summary>
@@ -547,8 +571,8 @@ namespace MIMConfigDocumenter
                         var objectId = attributeObjectIdChange.NewValue;
                         var displayName = displayNameChange.NewValue;
                         var displayNameMarkup = ServiceCommonDocumenter.GetJumpToBookmarkLocationMarkup(displayName, objectId, objectModificationType);
-                        var filter = filterChange.NewValue;
-                        var filterOld = filterChange.OldValue;
+                        var filter = this.GetFilterText(filterChange.NewValue);
+                        var filterOld = this.GetFilterText(filterChange.OldValue);
 
                         Documenter.AddRow(diffgramTable, new object[] { displayName, displayNameMarkup, filter, objectModificationType, displayNameMarkup, filterOld });
                     }
@@ -628,7 +652,14 @@ namespace MIMConfigDocumenter
 
                 // Criteria-based Members
                 this.CreateSimpleMultivalueValuesDiffgramDataSet();
-                this.FillSimpleMultivalueValuesDiffgramDataSet("Filter");
+
+                var filterChange = this.GetAttributeChange("Filter");
+                var filter = this.GetFilterText(filterChange.NewValue);
+                var filterOld = this.GetFilterText(filterChange.OldValue);
+
+                var diffgramTable = this.DiffgramDataSet.Tables[0];
+                Documenter.AddRow(diffgramTable, new object[] { filter, filter, filterChange.AttributeModificationType, filterOld, filterOld });
+
                 this.PrintSimpleSettingsSectionTable(new OrderedDictionary { { "Criteria-based Members", 100 } });
 
                 // Manually-managed Members
@@ -1087,17 +1118,20 @@ namespace MIMConfigDocumenter
                 var allAttributesChange = new AttributeValueChange();
                 allAttributesChange.NewValue = actionParameterChange.NewValue == "*" ? "Yes" : "No";
                 allAttributesChange.OldValue = actionParameterChange.OldValue == "*" ? "Yes" : "No";
+                var state = this.CurrentChangeObjectState;
+                var objectModificationType = state == "Create" ? DataRowState.Added : state == "Delete" ? DataRowState.Deleted : DataRowState.Modified;
+                allAttributesChange.ValueModificationType = objectModificationType != DataRowState.Modified ? objectModificationType : allAttributesChange.NewValue != allAttributesChange.OldValue ? DataRowState.Modified : DataRowState.Unchanged;
 
                 Documenter.AddRow(diffgramTable, new object[] { "Resource Attributes", DataRowState.Unchanged });
 
                 Documenter.AddRow(diffgramTable2, new object[] { "Resource Attributes", "All Attributes", DataRowState.Unchanged });
 
-                Documenter.AddRow(diffgramTable3, new object[] { "Resource Attributes", "All Attributes", ++configurationIndex, allAttributesChange.NewValueText, allAttributesChange.NewValue, actionParameterChange.AttributeModificationType, allAttributesChange.OldValueText, allAttributesChange.OldValue });
+                Documenter.AddRow(diffgramTable3, new object[] { "Resource Attributes", "All Attributes", ++configurationIndex, allAttributesChange.NewValueText, allAttributesChange.NewValue, allAttributesChange.ValueModificationType, allAttributesChange.OldValueText, allAttributesChange.OldValue });
 
                 Documenter.AddRow(diffgramTable2, new object[] { "Resource Attributes", "Specific Attributes", DataRowState.Unchanged });
                 for (var attributeValueIndex = 0; attributeValueIndex < actionParameterChange.AttributeValues.Count; ++attributeValueIndex)
                 {
-                    Documenter.AddRow(diffgramTable3, new object[] { "Resource Attributes", "Specific Attributes", ++configurationIndex + attributeValueIndex, actionParameterChange.AttributeValues[attributeValueIndex].NewValueText, actionParameterChange.AttributeValues[attributeValueIndex].NewValue, actionParameterChange.AttributeModificationType, actionParameterChange.AttributeValues[attributeValueIndex].OldValueText, actionParameterChange.AttributeValues[attributeValueIndex].OldValue });
+                    Documenter.AddRow(diffgramTable3, new object[] { "Resource Attributes", "Specific Attributes", ++configurationIndex + attributeValueIndex, actionParameterChange.AttributeValues[attributeValueIndex].NewValueText, actionParameterChange.AttributeValues[attributeValueIndex].NewValue, actionParameterChange.AttributeValues[attributeValueIndex].ValueModificationType, actionParameterChange.AttributeValues[attributeValueIndex].OldValueText, actionParameterChange.AttributeValues[attributeValueIndex].OldValue });
                 }
 
                 this.DiffgramDataSet = Documenter.SortDataSet(this.DiffgramDataSet);
@@ -1409,11 +1443,13 @@ namespace MIMConfigDocumenter
 
                 var column13 = new DataColumn("ActivityIndex", typeof(int));
                 var column23 = new DataColumn("Selected Option");
-                var column33 = new DataColumn("Value");
+                var column33 = new DataColumn("ValueMarkup");
+                var column43 = new DataColumn("ValueText");
 
                 table3.Columns.Add(column13);
                 table3.Columns.Add(column23);
                 table3.Columns.Add(column33);
+                table3.Columns.Add(column43);
                 table3.PrimaryKey = new[] { column13, column23 };
 
                 var table4 = new DataTable("Configuration Multivalues") { Locale = CultureInfo.InvariantCulture }; // for QA Gate Questions
@@ -1534,16 +1570,19 @@ namespace MIMConfigDocumenter
 
                             var selectedOption = attribute.Name.LocalName;
                             var optionValue = attribute.Value;
+                            var optionValueMarkup = attribute.Value;
 
                             if (ServiceCommonDocumenter.IsGuid(optionValue))
                             {
                                 var valueModificationType = this.Environment == ConfigEnvironment.PilotOnly ? DataRowState.Added : this.Environment == ConfigEnvironment.ProductionOnly ? DataRowState.Deleted : DataRowState.Unchanged; // Or should it be modified?
-                                optionValue = TryResolveReferences(optionValue, pilotConfig, valueModificationType).Item1;
+                                var resolvedValue = TryResolveReferences(optionValue, pilotConfig, valueModificationType);
+                                optionValueMarkup = resolvedValue.Item1;
+                                optionValue = resolvedValue.Item2;
                             }
 
                             if (optionValue != "{x:Null}" && optionValue != "00000000-0000-0000-0000-000000000000" && selectedOption != "Name" && selectedOption != "ActivityDisplayName")
                             {
-                                Documenter.AddRow(activitySelectedOptionsTable, new object[] { activityIndex, selectedOption, optionValue });
+                                Documenter.AddRow(activitySelectedOptionsTable, new object[] { activityIndex, selectedOption, optionValueMarkup, optionValue });
                             }
                         }
 
@@ -1688,15 +1727,18 @@ namespace MIMConfigDocumenter
 
             try
             {
-                var diffgramTable = Documenter.GetDiffgram(this.PilotDataSet.Tables[0], this.ProductionDataSet.Tables[0], null);
-                var diffgramTable2 = Documenter.GetDiffgram(this.PilotDataSet.Tables[2], this.ProductionDataSet.Tables[2], null);
-
                 var printTable = Documenter.GetPrintTable();
 
                 // Table 2
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 0 }, { "Hidden", true }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 1 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
-                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", true } }).Values.Cast<object>().ToArray());
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 3 }, { "Hidden", true }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
+
+                var columnsIgnored = printTable.Select("ChangeIgnored = true AND TableIndex = 1").Select(row => (int)row["ColumnIndex"]).ToArray();
+
+                var diffgramTable = Documenter.GetDiffgram(this.PilotDataSet.Tables[0], this.ProductionDataSet.Tables[0], null);
+                var diffgramTable2 = Documenter.GetDiffgram(this.PilotDataSet.Tables[2], this.ProductionDataSet.Tables[2], columnsIgnored);
 
                 this.DiffgramDataSet = new DataSet("Workflow Activities") { Locale = CultureInfo.InvariantCulture };
                 this.DiffgramDataSet.Tables.Add(diffgramTable);
@@ -2057,7 +2099,9 @@ namespace MIMConfigDocumenter
 
                 Logger.Instance.WriteWarning(warning);
 
-                this.ReportWriter.WriteFullBeginTag("table");
+                this.ReportWriter.WriteBeginTag("table");
+                this.ReportWriter.WriteAttribute("class", HtmlTableSize.Standard.ToString());
+                this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
                 this.ReportWriter.WriteFullBeginTag("tr");
                 this.ReportWriter.WriteBeginTag("td");
                 this.ReportWriter.WriteAttribute("class", "Highlight");

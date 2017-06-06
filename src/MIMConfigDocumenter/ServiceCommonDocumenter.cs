@@ -604,8 +604,6 @@ namespace MIMConfigDocumenter
                             break;
                         case "Put":
                             {
-                                attributeChange.AttributeModificationType = DataRowState.Modified;
-
                                 if (pilotAttribute != null)
                                 {
                                     foreach (var value in pilotAttribute.XPathSelectElements("Values/child::node()"))
@@ -619,6 +617,11 @@ namespace MIMConfigDocumenter
                                         }
 
                                         attributeChange.AttributeValues.Add(attributeValue);
+
+                                        if (attributeChange.AttributeModificationType != DataRowState.Modified)
+                                        {
+                                            attributeChange.AttributeModificationType = attributeValue.ValueModificationType;
+                                        }
                                     }
                                 }
 
@@ -638,6 +641,11 @@ namespace MIMConfigDocumenter
 
                                             attributeValue.NewValue = attributeValue.OldValue;
                                             attributeChange.AttributeValues.Add(attributeValue);
+
+                                            if (attributeChange.AttributeModificationType != DataRowState.Modified)
+                                            {
+                                                attributeChange.AttributeModificationType = attributeValue.ValueModificationType;
+                                            }
                                         }
                                     }
                                 }
@@ -783,7 +791,7 @@ namespace MIMConfigDocumenter
                             displayNameMarkup = ServiceCommonDocumenter.GetJumpToBookmarkLocationMarkup(displayName, objectId, valueModificationType);
                         }
 
-                        if (input == objectId)
+                        if (input == objectId || "urn:uuid:" + input == objectId)
                         {
                             input = displayName;
                         }

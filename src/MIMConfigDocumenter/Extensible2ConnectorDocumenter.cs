@@ -371,7 +371,7 @@ namespace MIMConfigDocumenter
 
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Setting", 25 }, { "Configuration", 70 }, { "Encrypted?", 5 } });
+                var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Setting", 25 }, { "Configuration", 65 }, { "Encrypted?", 10 } });
 
                 this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
             }
@@ -483,9 +483,16 @@ namespace MIMConfigDocumenter
 
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Setting", 25 }, { "Configuration", 70 }, { "Encrypted?", 5 } });
+                if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
+                {
+                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Setting", 25 }, { "Configuration", 65 }, { "Encrypted?", 10 } });
 
-                this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
+                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
+                }
+                else
+                {
+                    this.WriteContentParagraph("There are no Global parameters configured.");
+                }
             }
             finally
             {
@@ -635,7 +642,7 @@ namespace MIMConfigDocumenter
             {
                 if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
                 {
-                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Partition Parameter", 25 }, { "Configuration", 70 }, { "Encrypted?", 5 } });
+                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Partition Parameter", 25 }, { "Configuration", 65 }, { "Encrypted?", 10 } });
 
                     this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
                 }
