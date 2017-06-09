@@ -21,6 +21,7 @@ namespace MIMConfigDocumenter
     using System.Linq;
     using System.Net;
     using System.Web.UI;
+    using System.Xml;
     using System.Xml.Linq;
     using System.Xml.XPath;
 
@@ -1246,10 +1247,18 @@ namespace MIMConfigDocumenter
                         var xoml = xomlChange.NewValueText;
                         var xomlOld = xomlChange.OldValueText;
 
-                        var activityList = string.IsNullOrEmpty(xoml) ? string.Empty : string.Join("<br/>", XElement.Parse(xoml).Elements().Select(e => e.Name.LocalName));
-                        var activityListOld = string.IsNullOrEmpty(xomlOld) ? string.Empty : string.Join("<br/>", XElement.Parse(xomlOld).Elements().Select(e => e.Name.LocalName));
+                        try
+                        {
+                            var activityList = string.IsNullOrEmpty(xoml) ? string.Empty : string.Join("<br/>", XElement.Parse(xoml).Elements().Select(e => e.Name.LocalName));
+                            var activityListOld = string.IsNullOrEmpty(xomlOld) ? string.Empty : string.Join("<br/>", XElement.Parse(xomlOld).Elements().Select(e => e.Name.LocalName));
 
-                        Documenter.AddRow(diffgramTable, new object[] { displayName, displayNameMarkup, requestPhase, activityList, objectModificationType, displayNameMarkup, requestPhaseOld, activityListOld });
+                            Documenter.AddRow(diffgramTable, new object[] { displayName, displayNameMarkup, requestPhase, activityList, objectModificationType, displayNameMarkup, requestPhaseOld, activityListOld });
+                        }
+                        catch (XmlException e)
+                        {
+                            var errorMsg = "Error parsing WF: '" + displayName + "' Error: " + e.ToString();
+                            Logger.Instance.WriteError(errorMsg);
+                        }
                     }
 
                     this.DiffgramDataSet = Documenter.SortDataSet(this.DiffgramDataSet);
@@ -2418,6 +2427,11 @@ namespace MIMConfigDocumenter
                     table.AcceptChanges();
                 }
             }
+            catch (XmlException e)
+            {
+                var errorMsg = "Error parsing scoping filter: '" + systemScopingFiltersXml + "' Error: " + e.ToString();
+                Logger.Instance.WriteError(errorMsg);
+            }
             finally
             {
                 Logger.Instance.WriteMethodExit();
@@ -2483,17 +2497,22 @@ namespace MIMConfigDocumenter
 
                 if (!string.IsNullOrEmpty(relationshipCriteriaXml))
                 {
-                    var outboundScopingFilters = XElement.Parse(relationshipCriteriaXml).XPathSelectElements("//condition");
-                    for (var i = 0; i < outboundScopingFilters.Count(); ++i)
+                    var relationshipCriteria = XElement.Parse(relationshipCriteriaXml).XPathSelectElements("//condition");
+                    for (var i = 0; i < relationshipCriteria.Count(); ++i)
                     {
-                        var outboundScopingFilter = outboundScopingFilters.ElementAt(i);
-                        var ilmAttribute = (string)outboundScopingFilter.Element("ilmAttribute");
-                        var csAttribute = (string)outboundScopingFilter.Element("csAttribute");
+                        var relationshipCriteriaCondition = relationshipCriteria.ElementAt(i);
+                        var ilmAttribute = (string)relationshipCriteriaCondition.Element("ilmAttribute");
+                        var csAttribute = (string)relationshipCriteriaCondition.Element("csAttribute");
                         Documenter.AddRow(table, new object[] { i, ilmAttribute, "=", csAttribute });
                     }
 
                     table.AcceptChanges();
                 }
+            }
+            catch (XmlException e)
+            {
+                var errorMsg = "Error parsing relationship criteria: '" + relationshipCriteriaXml + "' Error: " + e.ToString();
+                Logger.Instance.WriteError(errorMsg);
             }
             finally
             {
@@ -2557,16 +2576,21 @@ namespace MIMConfigDocumenter
 
                 if (!string.IsNullOrEmpty(synchronizationRuleParametersXml))
                 {
-                    var outboundScopingFilters = XElement.Parse(synchronizationRuleParametersXml).XPathSelectElements("//sync-parameter");
-                    foreach (var outboundScopingFilter in outboundScopingFilters)
+                    var synchronizationRuleParameters = XElement.Parse(synchronizationRuleParametersXml).XPathSelectElements("//sync-parameter");
+                    foreach (var synchronizationRuleParameter in synchronizationRuleParameters)
                     {
-                        var parameterName = (string)outboundScopingFilter.Element("name");
-                        var parameterType = (string)outboundScopingFilter.Element("type");
+                        var parameterName = (string)synchronizationRuleParameter.Element("name");
+                        var parameterType = (string)synchronizationRuleParameter.Element("type");
                         Documenter.AddRow(table, new object[] { parameterName, parameterType });
                     }
 
                     table.AcceptChanges();
                 }
+            }
+            catch (XmlException e)
+            {
+                var errorMsg = "Error parsing sync rule parameters: '" + synchronizationRuleParametersXml + "' Error: " + e.ToString();
+                Logger.Instance.WriteError(errorMsg);
             }
             finally
             {
@@ -2700,29 +2724,37 @@ namespace MIMConfigDocumenter
                         var exportFlowXml = pilotConfig ? valueChange.NewValue : valueChange.OldValue;
                         if (!string.IsNullOrEmpty(exportFlowXml))
                         {
-                            var exportFlow = XElement.Parse(exportFlowXml);
-                            var destination = (string)exportFlow.Element("dest");
-                            var initialFlow = transformationsChange.AttributeName.Equals("InitialFlow", StringComparison.OrdinalIgnoreCase) ? true : false;
-                            var existenceTest = transformationsChange.AttributeName.Equals("ExistenceTest", StringComparison.OrdinalIgnoreCase) ? true : false;
-                            var allowNull = ((string)exportFlow.Attribute("allows-null") ?? string.Empty).Equals("true", StringComparison.OrdinalIgnoreCase) ? true : false;
-                            var referenceAttributePrecedence = string.Empty;
-                            foreach (var csValue in exportFlow.XPathSelectElements("scope/csValue"))
+                            try
                             {
-                                referenceAttributePrecedence += (string)csValue + ";";
-                            }
+                                var exportFlow = XElement.Parse(exportFlowXml);
+                                var destination = (string)exportFlow.Element("dest");
+                                var initialFlow = transformationsChange.AttributeName.Equals("InitialFlow", StringComparison.OrdinalIgnoreCase) ? true : false;
+                                var existenceTest = transformationsChange.AttributeName.Equals("ExistenceTest", StringComparison.OrdinalIgnoreCase) ? true : false;
+                                var allowNull = ((string)exportFlow.Attribute("allows-null") ?? string.Empty).Equals("true", StringComparison.OrdinalIgnoreCase) ? true : false;
+                                var referenceAttributePrecedence = string.Empty;
+                                foreach (var csValue in exportFlow.XPathSelectElements("scope/csValue"))
+                                {
+                                    referenceAttributePrecedence += (string)csValue + ";";
+                                }
 
-                            var directFlow = exportFlow.Elements("fn").Count() == 0;
-                            var source = string.Empty;
-                            if (directFlow)
-                            {
-                                source = exportFlow.XPathSelectElement("src/attr") != null ? (string)exportFlow.XPathSelectElement("src/attr") : (string)exportFlow.Element("src");
-                            }
-                            else
-                            {
-                                source = this.ParseSynchronizationRuleFunctionExpression(exportFlow.Element("fn"));
-                            }
+                                var directFlow = exportFlow.Elements("fn").Count() == 0;
+                                var source = string.Empty;
+                                if (directFlow)
+                                {
+                                    source = exportFlow.XPathSelectElement("src/attr") != null ? (string)exportFlow.XPathSelectElement("src/attr") : (string)exportFlow.Element("src");
+                                }
+                                else
+                                {
+                                    source = this.ParseSynchronizationRuleFunctionExpression(exportFlow.Element("fn"));
+                                }
 
-                            Documenter.AddRow(table, new object[] { destination, initialFlow, existenceTest, allowNull, referenceAttributePrecedence, source, "&#8594;", destination });
+                                Documenter.AddRow(table, new object[] { destination, initialFlow, existenceTest, allowNull, referenceAttributePrecedence, source, "&#8594;", destination });
+                            }
+                            catch (XmlException e)
+                            {
+                                var errorMsg = "Error parsing export flow xml: '" + exportFlowXml + "' Error: " + e.ToString();
+                                Logger.Instance.WriteError(errorMsg);
+                            }
                         }
                     }
 
@@ -2746,7 +2778,7 @@ namespace MIMConfigDocumenter
             {
                 if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
                 {
-                    var headerTable = Documenter.GetSimpleSettingsHeaderTable("Outbound Attribute Flow", new OrderedDictionary { { "Initial Flow Only", 10 }, { "Use as Existence Test", 10 }, { "Allow Null", 5 }, { "Reference Attribute Precedence", 15 }, { "FIM Value", 35 }, { "Direction", 10 }, { "Destination Attribute", 15 } });
+                    var headerTable = Documenter.GetSimpleSettingsHeaderTable("Outbound Attribute Flow", new OrderedDictionary { { "Initial Flow Only", 9 }, { "Use as Existence Test", 9 }, { "Allow Null", 8 }, { "Reference Attribute Precedence", 15 }, { "FIM Value", 35 }, { "Direction", 9 }, { "Destination Attribute", 15 } });
                     this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
                 }
             }
@@ -2793,20 +2825,28 @@ namespace MIMConfigDocumenter
                         var importFlowXml = pilotConfig ? valueChange.NewValue : valueChange.OldValue;
                         if (!string.IsNullOrEmpty(importFlowXml))
                         {
-                            var importFlow = XElement.Parse(importFlowXml);
-                            var destination = (string)importFlow.Element("dest");
-                            var directFlow = importFlow.Elements("fn").Count() == 0;
-                            var source = string.Empty;
-                            if (directFlow)
+                            try
                             {
-                                source = importFlow.XPathSelectElement("src/attr") != null ? (string)importFlow.XPathSelectElement("src/attr") : (string)importFlow.Element("src");
-                            }
-                            else
-                            {
-                                source = this.ParseSynchronizationRuleFunctionExpression(importFlow.Element("fn"));
-                            }
+                                var importFlow = XElement.Parse(importFlowXml);
+                                var destination = (string)importFlow.Element("dest");
+                                var directFlow = importFlow.Elements("fn").Count() == 0;
+                                var source = string.Empty;
+                                if (directFlow)
+                                {
+                                    source = importFlow.XPathSelectElement("src/attr") != null ? (string)importFlow.XPathSelectElement("src/attr") : (string)importFlow.Element("src");
+                                }
+                                else
+                                {
+                                    source = this.ParseSynchronizationRuleFunctionExpression(importFlow.Element("fn"));
+                                }
 
-                            Documenter.AddRow(table, new object[] { destination, source, "&#8594;", destination });
+                                Documenter.AddRow(table, new object[] { destination, source, "&#8594;", destination });
+                            }
+                            catch (XmlException e)
+                            {
+                                var errorMsg = "Error parsing import flow xml: '" + importFlowXml + "' Error: " + e.ToString();
+                                Logger.Instance.WriteError(errorMsg);
+                            }
                         }
                     }
 

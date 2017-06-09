@@ -357,7 +357,15 @@ namespace MIMConfigDocumenter
             XElement simplifiedXoml = null;
             if (!string.IsNullOrEmpty(workflowXoml))
             {
-                simplifiedXoml = RemoveAllNamespaces(XElement.Parse(workflowXoml));
+                try
+                {
+                    simplifiedXoml = RemoveAllNamespaces(XElement.Parse(workflowXoml));
+                }
+                catch (XmlException e)
+                {
+                    var errorMsg = "Error parsing WF xoml: '" + workflowXoml + "' Error: " + e.ToString();
+                    Logger.Instance.WriteError(errorMsg);
+                }
             }
 
             return simplifiedXoml;
@@ -749,6 +757,13 @@ namespace MIMConfigDocumenter
                         attributeValue.NewId = attributeValue.OldId;
                         attributeValue.NewValueText = attributeValue.OldValueText;
                     }
+
+                    // don't care for the old markup if the text values are same
+                    // as it shows up as false changes
+                    if (attributeValue.NewValueText == attributeValue.OldValueText)
+                    {
+                        attributeValue.OldValue = attributeValue.NewValue;
+                    }
                 }
             }
             finally
@@ -785,10 +800,19 @@ namespace MIMConfigDocumenter
                     if (referencedObject != null)
                     {
                         displayName = (string)referencedObject.XPathSelectElement(ServiceCommonDocumenter.GetRelativeAttributeXPath("DisplayName") + "/Value");
-
                         if (!string.IsNullOrEmpty(displayName))
                         {
-                            displayNameMarkup = ServiceCommonDocumenter.GetJumpToBookmarkLocationMarkup(displayName, objectId, valueModificationType);
+                            var objectType = (string)referencedObject.XPathSelectElement(ServiceCommonDocumenter.GetRelativeAttributeXPath("ObjectType") + "/Value") ?? string.Empty;
+
+                            if (objectType.Equals("ma-data", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var connectorGuid = (string)referencedObject.XPathSelectElement(ServiceCommonDocumenter.GetRelativeAttributeXPath("SyncConfig-id") + "/Value") ?? string.Empty;
+                                displayNameMarkup = ServiceCommonDocumenter.GetJumpToBookmarkLocationMarkup(displayName, connectorGuid, valueModificationType);
+                            }
+                            else
+                            {
+                                displayNameMarkup = ServiceCommonDocumenter.GetJumpToBookmarkLocationMarkup(displayName, objectId, valueModificationType);
+                            }
                         }
 
                         if (input == objectId || "urn:uuid:" + input == objectId)
