@@ -458,7 +458,7 @@ namespace MIMConfigDocumenter
                     var xmlFilter = XElement.Parse(filter);
                     filter = xmlFilter.Value;
                 }
-                catch (Exception e)
+                catch (XmlException e)
                 {
                     var info = string.Format(CultureInfo.InvariantCulture, "Unable to Parse Filter '{0}'. Error {1}.", filter, e.ToString());
                     Logger.Instance.WriteInfo(info);
@@ -1216,7 +1216,6 @@ namespace MIMConfigDocumenter
             try
             {
                 var diffgramTable = this.DiffgramDataSet.Tables[0];
-                var diffgramTable2 = this.DiffgramDataSet.Tables[1];
 
                 var objectType = "WorkflowDefinition";
 
@@ -1333,7 +1332,7 @@ namespace MIMConfigDocumenter
                     new KeyValuePair<string, string>("Workflow Type", "RequestPhase"),
                     new KeyValuePair<string, string>("Run On Policy Update", "RunOnPolicyUpdate"),
                 });
-                this.PrintSimpleSettingsSectionTable(new OrderedDictionary { { "General", 30 }, { string.Empty, 70 } });
+                this.PrintSimpleSettingsSectionTable(new OrderedDictionary { { "General", 30 }, { string.Empty, 70 } }, HtmlTableSize.Large);
 
                 // Workflow Activties
                 this.CreateWorkflowActivityDetailsDataSets();
@@ -1644,9 +1643,9 @@ namespace MIMConfigDocumenter
 
                 for (var expressionIndex = 0; expressionIndex < hashtableKeyCount; ++expressionIndex)
                 {
-                    var valueExpression = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":0']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
-                    var target = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":1']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
-                    var allowNull = ((IEnumerable)hashtable.XPathEvaluate("//Key[String = '" + expressionIndex + ":2']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+                    var valueExpression = ((IEnumerable)hashtable.XPathEvaluate(".//Key[String = '" + expressionIndex + ":0']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+                    var target = ((IEnumerable)hashtable.XPathEvaluate(".//Key[String = '" + expressionIndex + ":1']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
+                    var allowNull = ((IEnumerable)hashtable.XPathEvaluate(".//Key[String = '" + expressionIndex + ":2']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
 
                     if (activityValueExpressionsTable.Columns.Count == 4)
                     {
@@ -1908,7 +1907,7 @@ namespace MIMConfigDocumenter
                     #region table
 
                     this.ReportWriter.WriteBeginTag("table");
-                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Standard.ToString() + " " + this.GetCssVisibilityClass());
+                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Large.ToString() + " " + this.GetCssVisibilityClass());
                     this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
                     {
                         this.WriteTableHeader(headerTable);
@@ -1958,7 +1957,7 @@ namespace MIMConfigDocumenter
                     #region table
 
                     this.ReportWriter.WriteBeginTag("table");
-                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Standard.ToString() + " " + this.GetCssVisibilityClass());
+                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Large.ToString() + " " + this.GetCssVisibilityClass());
                     this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
                     {
                         this.WriteTableHeader(headerTable);
@@ -2009,7 +2008,7 @@ namespace MIMConfigDocumenter
                     #region table
 
                     this.ReportWriter.WriteBeginTag("table");
-                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Standard.ToString() + " " + this.GetCssVisibilityClass());
+                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Large.ToString() + " " + this.GetCssVisibilityClass());
                     this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
                     {
                         this.WriteTableHeader(headerTable);
@@ -2066,7 +2065,7 @@ namespace MIMConfigDocumenter
                     #region table
 
                     this.ReportWriter.WriteBeginTag("table");
-                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Standard.ToString() + " " + this.GetCssVisibilityClass());
+                    this.ReportWriter.WriteAttribute("class", HtmlTableSize.Large.ToString() + " " + this.GetCssVisibilityClass());
                     this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
                     {
                         this.WriteTableHeader(headerTable);
@@ -2109,7 +2108,7 @@ namespace MIMConfigDocumenter
                 Logger.Instance.WriteWarning(warning);
 
                 this.ReportWriter.WriteBeginTag("table");
-                this.ReportWriter.WriteAttribute("class", HtmlTableSize.Standard.ToString());
+                this.ReportWriter.WriteAttribute("class", HtmlTableSize.Large.ToString());
                 this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
                 this.ReportWriter.WriteFullBeginTag("tr");
                 this.ReportWriter.WriteBeginTag("td");
@@ -2285,11 +2284,11 @@ namespace MIMConfigDocumenter
 
                 // Outbound System Scoping Filter
                 var outboundScopingFiltersChange = this.GetAttributeChange("msidmOutboundScopingFilters");
-                this.ProcessSynchronizationRuleSystemScopingFilter(outboundScopingFiltersChange);
+                this.ProcessSynchronizationRuleSystemScopingFilter(outboundScopingFiltersChange, true);
 
                 // Inbound System Scoping Filter
                 var inboundScopingFiltersChange = this.GetAttributeChange("ConnectedSystemScope");
-                this.ProcessSynchronizationRuleSystemScopingFilter(inboundScopingFiltersChange);
+                this.ProcessSynchronizationRuleSystemScopingFilter(inboundScopingFiltersChange, false);
 
                 // Relationship
                 var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Relationship", 100 } });
@@ -2384,7 +2383,8 @@ namespace MIMConfigDocumenter
         /// Processes the Synchronization Rule Inbound / Outbound System Scoping Filters
         /// </summary>
         /// <param name="systemScopingFiltersChange">The inbound / outbound system scoping filter attribute change.</param>
-        protected void ProcessSynchronizationRuleSystemScopingFilter(AttributeChange systemScopingFiltersChange)
+        /// <param name="outboundSystemScopingFilters">if set to <c>true</c>, denotes outbound system scoping filter. Otherwise, the .</param>
+        protected void ProcessSynchronizationRuleSystemScopingFilter(AttributeChange systemScopingFiltersChange, bool outboundSystemScopingFilters)
         {
             if (systemScopingFiltersChange == null)
             {
@@ -2395,7 +2395,7 @@ namespace MIMConfigDocumenter
             this.FillSynchronizationRuleSystemScopingFiltersDataSet(systemScopingFiltersChange.NewValue, true);
             this.FillSynchronizationRuleSystemScopingFiltersDataSet(systemScopingFiltersChange.OldValue, false);
             this.CreateSimpleOrderedSettingsDiffgram();
-            this.PrintSynchronizationRuleSystemScopingFilters(true);
+            this.PrintSynchronizationRuleSystemScopingFilters(outboundSystemScopingFilters);
         }
 
         /// <summary>
@@ -2721,12 +2721,17 @@ namespace MIMConfigDocumenter
                 {
                     foreach (var valueChange in transformationsChange.AttributeValues)
                     {
-                        var exportFlowXml = pilotConfig ? valueChange.NewValue : valueChange.OldValue;
+                        var exportFlowXml = pilotConfig ? (valueChange.ValueModificationType != DataRowState.Deleted ? valueChange.NewValue : string.Empty) : valueChange.OldValue; // Deleted values should be processed only when it's production config.
                         if (!string.IsNullOrEmpty(exportFlowXml))
                         {
                             try
                             {
                                 var exportFlow = XElement.Parse(exportFlowXml);
+                                if (!exportFlow.Name.LocalName.Equals("export-flow", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    continue;
+                                }
+
                                 var destination = (string)exportFlow.Element("dest");
                                 var initialFlow = transformationsChange.AttributeName.Equals("InitialFlow", StringComparison.OrdinalIgnoreCase) ? true : false;
                                 var existenceTest = transformationsChange.AttributeName.Equals("ExistenceTest", StringComparison.OrdinalIgnoreCase) ? true : false;
@@ -2822,12 +2827,17 @@ namespace MIMConfigDocumenter
                 {
                     foreach (var valueChange in transformationsChange.AttributeValues)
                     {
-                        var importFlowXml = pilotConfig ? valueChange.NewValue : valueChange.OldValue;
+                        var importFlowXml = pilotConfig ? (valueChange.ValueModificationType != DataRowState.Deleted ? valueChange.NewValue : string.Empty) : valueChange.OldValue; // Deleted values should be processed only when it's production config.
                         if (!string.IsNullOrEmpty(importFlowXml))
                         {
                             try
                             {
                                 var importFlow = XElement.Parse(importFlowXml);
+                                if (!importFlow.Name.LocalName.Equals("import-flow", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    continue;
+                                }
+
                                 var destination = (string)importFlow.Element("dest");
                                 var directFlow = importFlow.Elements("fn").Count() == 0;
                                 var source = string.Empty;
@@ -3045,7 +3055,7 @@ namespace MIMConfigDocumenter
                         var description = descriptionChange.NewValue;
                         var descriptionOld = descriptionChange.OldValue;
 
-                        Documenter.AddRow(diffgramTable, new object[] { displayName, displayName, targetObjectType, appliesToCreate, appliesToEdit, appliesToView, configurationData, description, objectModificationType, displayName, targetObjectTypeOld, appliesToCreateOld, appliesToEditOld, appliesToViewOld, configurationDataOld, description });
+                        Documenter.AddRow(diffgramTable, new object[] { displayName, displayName, targetObjectType, appliesToCreate, appliesToEdit, appliesToView, configurationData, description, objectModificationType, displayName, targetObjectTypeOld, appliesToCreateOld, appliesToEditOld, appliesToViewOld, configurationDataOld, descriptionOld });
                     }
 
                     this.DiffgramDataSet = Documenter.SortDataSet(this.DiffgramDataSet);

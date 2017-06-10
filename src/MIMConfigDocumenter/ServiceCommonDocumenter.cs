@@ -1360,7 +1360,8 @@ namespace MIMConfigDocumenter
         /// Prints simple settings section table
         /// </summary>
         /// <param name="columnNames">The table header column names</param>
-        protected void PrintSimpleSettingsSectionTable(OrderedDictionary columnNames)
+        /// <param name="tableSize">The size (width) of the HTML table</param>
+        protected void PrintSimpleSettingsSectionTable(OrderedDictionary columnNames, HtmlTableSize tableSize = HtmlTableSize.Standard)
         {
             Logger.Instance.WriteMethodEntry();
 
@@ -1369,7 +1370,7 @@ namespace MIMConfigDocumenter
                 if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
                 {
                     var headerTable = columnNames == null || columnNames.Count == 0 ? null : Documenter.GetSimpleSettingsHeaderTable(columnNames);
-                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
+                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable, tableSize);
                 }
             }
             finally

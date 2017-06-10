@@ -223,7 +223,8 @@ namespace MIMConfigDocumenter
                 var column52 = new DataColumn("SourceObjectType");
                 var column62 = new DataColumn("SourceAttribute");
                 var column72 = new DataColumn("MappingType");
-                var column82 = new DataColumn("ConnectorGuid");
+                var column82 = new DataColumn("Inbound Scoping Filter");
+                var column92 = new DataColumn("ConnectorGuid");
 
                 table2.Columns.Add(column12);
                 table2.Columns.Add(column22);
@@ -233,7 +234,8 @@ namespace MIMConfigDocumenter
                 table2.Columns.Add(column62);
                 table2.Columns.Add(column72);
                 table2.Columns.Add(column82);
-                table2.PrimaryKey = new[] { column12, column42, column52, column62, column72 };
+                table2.Columns.Add(column92);
+                table2.PrimaryKey = new[] { column12, column42, column52, column62, column72, column82 };
 
                 this.PilotDataSet = new DataSet("MetaverseObjectType") { Locale = CultureInfo.InvariantCulture };
                 this.PilotDataSet.Tables.Add(table);
@@ -291,7 +293,7 @@ namespace MIMConfigDocumenter
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
 
                 // Connector
-                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 3 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", 7 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 3 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", 8 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
 
                 // Data Source Object Type
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 4 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
@@ -302,8 +304,11 @@ namespace MIMConfigDocumenter
                 // Mapping Type
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 6 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
 
+                // Inbound Scoping Filter
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 7 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
+
                 // ConnectorGuid
-                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 7 }, { "Hidden", true }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", true } }).Values.Cast<object>().ToArray());
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 8 }, { "Hidden", true }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", true } }).Values.Cast<object>().ToArray());
 
                 printTable.AcceptChanges();
 
@@ -395,6 +400,7 @@ namespace MIMConfigDocumenter
 
                         Logger.Instance.WriteVerbose("Processing Sync Rule Info for Connector: '{0}'.", connectorName);
 
+                        var scopeExpression = string.Empty;
                         if (importFlow.XPathSelectElement("direct-mapping") != null)
                         {
                             row2[5] = (string)importFlow.XPathSelectElement("direct-mapping/src-attribute");
@@ -445,9 +451,24 @@ namespace MIMConfigDocumenter
                                 row2[5] = dataSourceAttribute.TrimEnd(',');
                                 row2[6] = "Sync Rule - Expression";  // TODO: Print the Sync Rule Expression
                             }
+
+                            var syncRuleId = (string)importFlow.XPathSelectElement("sync-rule-mapping").Attribute("sync-rule-id") ?? string.Empty;
+
+                            var connector = config.XPathSelectElement("//ma-data[id ='" + connectorId + "']");
+
+                            foreach (var scope in connector.XPathSelectElements("join/join-profile/join-criterion[@sync-rule-id='" + syncRuleId + "']/scoping/scope"))
+                            {
+                                scopeExpression += string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} AND ", (string)scope.Element("csAttribute"), (string)scope.Element("csOperator"), (string)scope.Element("csValue"));
+                            }
+
+                            if (scopeExpression.Length > 5)
+                            {
+                                scopeExpression = scopeExpression.Substring(0, scopeExpression.Length - " AND ".Length);
+                            }
                         }
 
-                        row2[7] = connectorId;
+                        row2[7] = scopeExpression;
+                        row2[8] = connectorId;
                         Documenter.AddRow(table2, row2);
 
                         Logger.Instance.WriteVerbose("Processed Sync Rule Info for Connector: '{0}'.", connectorName);
@@ -510,23 +531,26 @@ namespace MIMConfigDocumenter
                 headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 0 }, { "ColumnIndex", 3 }, { "ColumnName", "Indexed" }, { "RowSpan", 2 }, { "ColSpan", 1 }, { "ColWidth", 5 } }).Values.Cast<object>().ToArray());
 
                 // Precedence
-                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 0 }, { "ColumnIndex", 4 }, { "ColumnName", "Precedence" }, { "RowSpan", 1 }, { "ColSpan", 5 }, { "ColWidth", 0 } }).Values.Cast<object>().ToArray());
+                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 0 }, { "ColumnIndex", 4 }, { "ColumnName", "Precedence" }, { "RowSpan", 1 }, { "ColSpan", 6 }, { "ColWidth", 0 } }).Values.Cast<object>().ToArray());
 
                 // Header Row 2
                 // Precedence Display - Rank or Manual or Equal
                 headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 0 }, { "ColumnName", "Rank" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 5 } }).Values.Cast<object>().ToArray());
 
                 // Connector
-                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 1 }, { "ColumnName", "Management Agent" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 15 } }).Values.Cast<object>().ToArray());
+                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 1 }, { "ColumnName", "Management Agent" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 13 } }).Values.Cast<object>().ToArray());
 
                 // Data Source Object Type
-                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 2 }, { "ColumnName", "Data Source Object Type" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 10 } }).Values.Cast<object>().ToArray());
+                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 2 }, { "ColumnName", "Data Source Object Type" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 7 } }).Values.Cast<object>().ToArray());
 
                 // Data Source Attribute
-                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 3 }, { "ColumnName", "Data Source Attribute" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 20 } }).Values.Cast<object>().ToArray());
+                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 3 }, { "ColumnName", "Data Source Attribute" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 15 } }).Values.Cast<object>().ToArray());
 
                 // Mapping Type
-                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 4 }, { "ColumnName", "Mapping Type" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 20 } }).Values.Cast<object>().ToArray());
+                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 4 }, { "ColumnName", "Mapping Type" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 15 } }).Values.Cast<object>().ToArray());
+
+                // Inbound Scoping Filter
+                headerTable.Rows.Add((new OrderedDictionary { { "RowIndex", 1 }, { "ColumnIndex", 5 }, { "ColumnName", "Inbound Scoping Filter" }, { "RowSpan", 1 }, { "ColSpan", 1 }, { "ColWidth", 15 } }).Values.Cast<object>().ToArray());
 
                 headerTable.AcceptChanges();
 

@@ -1460,7 +1460,13 @@ namespace MIMConfigDocumenter
                                 }
                                 else if (joinRuleType.Equals("sync-rule", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    mappingType = "Sync Rule - Direct";
+                                    var scopeExpression = string.Empty;
+                                    foreach (var scope in joinCriterion.XPathSelectElements("scoping/scope"))
+                                    {
+                                        scopeExpression += string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} AND ", (string)scope.Element("csAttribute"), (string)scope.Element("csOperator"), (string)scope.Element("csValue"));
+                                    }
+
+                                    mappingType = string.IsNullOrEmpty(scopeExpression) ? "Sync Rule - Direct" : "Sync Rule - Scoped - " + scopeExpression.Substring(0, scopeExpression.Length - " AND ".Length);
                                 }
 
                                 Documenter.AddRow(table2, new object[] { sourceObjectType, mappingGroupIndex, metaverseObjectType, sourceAttribute, mappingType, metaverseAttribute });
@@ -1542,7 +1548,7 @@ namespace MIMConfigDocumenter
             {
                 Logger.Instance.WriteInfo("Processing Connector Projection Rules.");
 
-                this.CreateSimpleSettingsDataSets(3); // 1 = Data Source Object, 2 = Projection Type, 3 = Metaverse Object
+                this.CreateSimpleOrderedSettingsDataSets(4, true); // 1 = Order Control, 2 = Data Source Object, 3 = Projection Type, 4 = Metaverse Object
 
                 this.FillConnectorProjectionRulesDataSet(true);
                 this.FillConnectorProjectionRulesDataSet(false);
@@ -1586,16 +1592,37 @@ namespace MIMConfigDocumenter
                         return;
                     }
 
+                    var projectionRuleIndex = 0; // This will be the relative rule number if there are more than one sync rule based projection rules.
+                    var previoussourceObjectType = string.Empty;
                     foreach (var projectionRule in projectionRules)
                     {
                         var sourceObjectType = (string)projectionRule.Attribute("cd-object-type");
+
+                        projectionRuleIndex = sourceObjectType == previoussourceObjectType ? projectionRuleIndex + 1 : 0;
+                        previoussourceObjectType = sourceObjectType;
+
                         var projectionType = (string)projectionRule.Attribute("type") ?? string.Empty;
+                        var scopeExpression = string.Empty;
+                        if (projectionType.Equals("sync-rule", StringComparison.OrdinalIgnoreCase))
+                        {
+                            foreach (var scope in projectionRule.XPathSelectElements("scoping/scope"))
+                            {
+                                scopeExpression += string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} AND ", (string)scope.Element("csAttribute"), (string)scope.Element("csOperator"), (string)scope.Element("csValue"));
+                            }
+
+                            if (scopeExpression.Length > 5)
+                            {
+                                scopeExpression = scopeExpression.Substring(0, scopeExpression.Length - " AND ".Length);
+                            }
+                        }
+
                         projectionType = projectionType.Equals("scripted", StringComparison.OrdinalIgnoreCase) ?
                             "Rules Extension" : projectionType.Equals("declared", StringComparison.OrdinalIgnoreCase) ?
-                            "Declared" : projectionType.Equals("sync-rule", StringComparison.OrdinalIgnoreCase) ? "Sync Rule" : projectionType;
+                            "Declared" : projectionType.Equals("sync-rule", StringComparison.OrdinalIgnoreCase) ? string.IsNullOrEmpty(scopeExpression) ? "Sync Rule - Direct" : "Sync Rule - Scoped - " + scopeExpression : projectionType;
+
                         var metaverseObjectType = (string)projectionRule.Element("mv-object-type") ?? string.Empty;
 
-                        Documenter.AddRow(table, new object[] { sourceObjectType, projectionType, metaverseObjectType });
+                        Documenter.AddRow(table, new object[] { sourceObjectType + projectionRuleIndex, sourceObjectType, projectionType, metaverseObjectType });
                     }
 
                     table.AcceptChanges();
@@ -1768,7 +1795,7 @@ namespace MIMConfigDocumenter
             {
                 Logger.Instance.WriteInfo("Processing Connector Import Attribute Flows. This may take a few minutes...");
 
-                this.CreateSimpleOrderedSettingsDataSets(6, true); // / 1 = Order Control, 2 = Data Source Attribute, 3 = To, 4 = Metaverse Attribute, 5 = Mapping Type, 6 = Precedence Order
+                this.CreateSimpleOrderedSettingsDataSets(7, true); // 1 = Order Control, 2 = Data Source Attribute, 3 = To, 4 = Metaverse Attribute, 5 = Mapping Type, 6 = Scoping Filter, 7 = Precedence Order
 
                 this.FillConnectorObjectTypeImportAttributeFlowsDataSet(true);
                 this.FillConnectorObjectTypeImportAttributeFlowsDataSet(false);
@@ -1815,9 +1842,9 @@ namespace MIMConfigDocumenter
                         return;
                     }
 
-                    var importFlowRuleIndex = 0; // This will be the relative rule number if there are more than one outbound sync rule import flows for the same metaverse attribute.
+                    var importFlowRuleIndex = 0; // This will be the relative rule number if there are more than one inbound sync rule import flows for the same metaverse attribute.
                     var previousMetaverseAttribute = string.Empty;
-                    foreach (var metaverseAttribute in metaverseAttributes)
+                    foreach (var metaverseAttribute in metaverseAttributes.Distinct())
                     {
                         var allImportFlowsXPath = "//mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentMetaverseObjectType + "']/import-flows[@mv-attribute = '" + metaverseAttribute + "']";
                         var precedenceType = config.XPathSelectElement(allImportFlowsXPath) != null ? (string)config.XPathSelectElement(allImportFlowsXPath).Attribute("type") : string.Empty;
@@ -1841,6 +1868,7 @@ namespace MIMConfigDocumenter
 
                             var dataSourceAttribute = string.Empty;
                             var mappingType = string.Empty;
+                            var scopeExpression = string.Empty;
 
                             if (importFlow.XPathSelectElement("direct-mapping/src-attribute") != null)
                             {
@@ -1890,9 +1918,21 @@ namespace MIMConfigDocumenter
                                     dataSourceAttribute = !string.IsNullOrEmpty(dataSourceAttribute) ? dataSourceAttribute.Substring(0, dataSourceAttribute.Length - "<br/>".Length) : dataSourceAttribute;
                                     mappingType = "Sync Rule - Expression";  // TODO: Print the Sync Rule Expression
                                 }
+
+                                var syncRuleId = (string)importFlow.XPathSelectElement("sync-rule-mapping").Attribute("sync-rule-id") ?? string.Empty;
+
+                                foreach (var scope in connector.XPathSelectElements("join/join-profile/join-criterion[@sync-rule-id='" + syncRuleId + "']/scoping/scope"))
+                                {
+                                    scopeExpression += string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} AND ", (string)scope.Element("csAttribute"), (string)scope.Element("csOperator"), (string)scope.Element("csValue"));
+                                }
+
+                                if (scopeExpression.Length > 5)
+                                {
+                                    scopeExpression = scopeExpression.Substring(0, scopeExpression.Length - " AND ".Length);
+                                }
                             }
 
-                            Documenter.AddRow(table, new object[] { metaverseAttribute + importFlowRuleIndex, dataSourceAttribute, "&#8594;", metaverseAttribute, mappingType, precedenceType.Equals("ranked", StringComparison.OrdinalIgnoreCase) ? importFlowRank.ToString(CultureInfo.InvariantCulture) : precedenceType });
+                            Documenter.AddRow(table, new object[] { metaverseAttribute + importFlowRuleIndex, dataSourceAttribute, "&#8594;", metaverseAttribute, mappingType, scopeExpression, precedenceType.Equals("ranked", StringComparison.OrdinalIgnoreCase) ? importFlowRank.ToString(CultureInfo.InvariantCulture) : precedenceType });
                         }
                     }
 
@@ -1916,9 +1956,9 @@ namespace MIMConfigDocumenter
             {
                 if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
                 {
-                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Data Source Attribute", 40 }, { "To", 5 }, { "Metaverse Attribute", 20 }, { "Mapping Type", 25 }, { "Precedence Order", 10 } });
+                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Data Source Attribute", 30 }, { "To", 5 }, { "Metaverse Attribute", 15 }, { "Mapping Type", 20 }, { "Scoping Filter", 23 }, { "Precedence Order", 7 } });
 
-                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
+                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable, HtmlTableSize.Huge);
 
                     this.WriteBreakTag();
                 }
@@ -2080,9 +2120,9 @@ namespace MIMConfigDocumenter
             {
                 if (this.DiffgramDataSet.Tables[0].Rows.Count != 0)
                 {
-                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Data Source Attribute", 20 }, { "From", 5 }, { "Metaverse Attribute", 35 }, { "Mapping Type", 25 }, { "Allow Null", 5 }, { "Initial Flow Only", 10 } });
+                    var headerTable = Documenter.GetSimpleSettingsHeaderTable(new OrderedDictionary { { "Data Source Attribute", 20 }, { "From", 5 }, { "Metaverse Attribute", 35 }, { "Mapping Type", 26 }, { "Allow Null", 7 }, { "Initial Flow Only", 7 } });
 
-                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable);
+                    this.WriteTable(this.DiffgramDataSet.Tables[0], headerTable, HtmlTableSize.Huge);
                 }
             }
             finally

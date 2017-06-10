@@ -4,6 +4,21 @@ All notable changes to MIMConfigDocumenter project will be documented in this fi
 
 ------------
 
+### Version 1.17.0610.0
+
+#### Changed
+
+* In the sync engine configuration, Inbound Scoping Filter information is displayed when documenting import attribute flows.
+* In the sync engine configuration, sync rule scoping information is printed for join and projection rules.
+
+#### Fixed
+
+* In the sync engine configuration, import flows may get duplicated when inbound scoping filter in use.
+* In the Sync Rule configuration, Inbound Scoping Filter configuration gets printed in Outbound Scoping Filter section
+* In the MIMWAL activity configuration, Query Resources and Value Expressions information gets mixed up.
+
+------------
+
 ### Version 1.17.0606.0
 
 #### Fixed
