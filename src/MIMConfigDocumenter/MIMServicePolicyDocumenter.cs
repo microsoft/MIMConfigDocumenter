@@ -1474,29 +1474,33 @@ namespace MIMConfigDocumenter
                 var table5 = new DataTable("Workflow Activity WAL Value Expressions") { Locale = CultureInfo.InvariantCulture };
 
                 var column15 = new DataColumn("ActivityIndex", typeof(int));
-                var column25 = new DataColumn("SectionIndex", typeof(int)); // QueryTable, UpdatesTable, etc...
+                var column25 = new DataColumn("SectionIndex", typeof(int)); // QueryTable, etc with Allow Null supressed
                 var column35 = new DataColumn("Value Expression");
                 var column45 = new DataColumn("Target");
+                var column55 = new DataColumn("DisplayOrderIndex", typeof(int)); // Display Order Control
 
                 table5.Columns.Add(column15);
                 table5.Columns.Add(column25);
                 table5.Columns.Add(column35);
                 table5.Columns.Add(column45);
+                table5.Columns.Add(column55);
                 table5.PrimaryKey = new[] { column15, column25, column35, column45 };
 
                 var table6 = new DataTable("Workflow Activity WAL Update Expressions") { Locale = CultureInfo.InvariantCulture };
 
                 var column16 = new DataColumn("ActivityIndex", typeof(int));
-                var column26 = new DataColumn("SectionIndex", typeof(int)); // QueryTable, UpdatesTable, etc...
+                var column26 = new DataColumn("SectionIndex", typeof(int)); // UpdatesTable, etc. with Allow Null visible
                 var column36 = new DataColumn("Value Expression");
                 var column46 = new DataColumn("Target");
                 var column56 = new DataColumn("Allow Null");
+                var column66 = new DataColumn("DisplayOrderIndex", typeof(int)); // Display Order Control
 
                 table6.Columns.Add(column16);
                 table6.Columns.Add(column26);
                 table6.Columns.Add(column36);
                 table6.Columns.Add(column46);
                 table6.Columns.Add(column56);
+                table6.Columns.Add(column66);
                 table6.PrimaryKey = new[] { column16, column26, column36, column46 };
 
                 this.PilotDataSet = new DataSet("Workflow Activities") { Locale = CultureInfo.InvariantCulture };
@@ -1647,13 +1651,13 @@ namespace MIMConfigDocumenter
                     var target = ((IEnumerable)hashtable.XPathEvaluate(".//Key[String = '" + expressionIndex + ":1']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
                     var allowNull = ((IEnumerable)hashtable.XPathEvaluate(".//Key[String = '" + expressionIndex + ":2']/parent::node()/text()")).Cast<XText>().FirstOrDefault();
 
-                    if (activityValueExpressionsTable.Columns.Count == 4)
+                    if (activityValueExpressionsTable.Columns.Count == 5)
                     {
-                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null });
+                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, expressionIndex });
                     }
                     else
                     {
-                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, allowNull != null ? allowNull.Value : null });
+                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, allowNull != null ? allowNull.Value : null, expressionIndex });
                     }
                 }
             }
@@ -1737,7 +1741,7 @@ namespace MIMConfigDocumenter
             {
                 var printTable = Documenter.GetPrintTable();
 
-                // Table 2
+                // Table 3
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 0 }, { "Hidden", true }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 1 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", true } }).Values.Cast<object>().ToArray());
@@ -1783,7 +1787,7 @@ namespace MIMConfigDocumenter
 
                 var printTable = Documenter.GetPrintTable();
 
-                // Table 2
+                // Table 4
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 1 }, { "Hidden", true }, { "SortOrder", 1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
 
@@ -1822,11 +1826,12 @@ namespace MIMConfigDocumenter
 
                 var printTable = Documenter.GetPrintTable();
 
-                // Table 2
+                // Table 5
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 3 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 4 }, { "Hidden", true }, { "SortOrder", 1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
 
-                this.DiffgramDataSet = new DataSet("Workflow Activity Multi-values") { Locale = CultureInfo.InvariantCulture };
+                this.DiffgramDataSet = new DataSet("Workflow Activity Value Expressions") { Locale = CultureInfo.InvariantCulture };
                 this.DiffgramDataSet.Tables.Add(diffgramTable);
                 this.DiffgramDataSet.Tables.Add(diffgramTable2);
                 this.DiffgramDataSet.Tables.Add(printTable);
@@ -1861,12 +1866,13 @@ namespace MIMConfigDocumenter
 
                 var printTable = Documenter.GetPrintTable();
 
-                // Table 2
+                // Table 6
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 2 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 3 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
                 printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 4 }, { "Hidden", false }, { "SortOrder", -1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
+                printTable.Rows.Add((new OrderedDictionary { { "TableIndex", 1 }, { "ColumnIndex", 5 }, { "Hidden", true }, { "SortOrder", 1 }, { "BookmarkIndex", -1 }, { "JumpToBookmarkIndex", -1 }, { "ChangeIgnored", false } }).Values.Cast<object>().ToArray());
 
-                this.DiffgramDataSet = new DataSet("Workflow Activity Multi-values") { Locale = CultureInfo.InvariantCulture };
+                this.DiffgramDataSet = new DataSet("Workflow Activity Update Expressions") { Locale = CultureInfo.InvariantCulture };
                 this.DiffgramDataSet.Tables.Add(diffgramTable);
                 this.DiffgramDataSet.Tables.Add(diffgramTable2);
                 this.DiffgramDataSet.Tables.Add(printTable);
@@ -2057,7 +2063,7 @@ namespace MIMConfigDocumenter
                 this.DiffgramDataSet = tableSubHeader.Count == 3 ? this.DiffgramDataSets[4] : this.DiffgramDataSets[3];
 
                 int currentTableIndex = 1;
-                var rows = this.DiffgramDataSet.Tables[currentTableIndex].Select("ActivityIndex = " + activityIndex + "AND SectionIndex = " + sectionIndex);
+                var rows = this.DiffgramDataSet.Tables[currentTableIndex].Select("ActivityIndex = " + activityIndex + "AND SectionIndex = " + sectionIndex, "DisplayOrderIndex ASC");
                 if (rows.Count() != 0)
                 {
                     var headerTable = Documenter.GetSimpleSettingsHeaderTable(tableHeader, tableSubHeader);

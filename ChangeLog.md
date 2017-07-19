@@ -4,6 +4,14 @@ All notable changes to MIMConfigDocumenter project will be documented in this fi
 
 ------------
 
+### Version 1.17.0719.0
+
+#### Fixed
+
+* In the MIMWAL activity configuration, Value Expressions information gets reordered alphabetically.
+
+------------
+
 ### Version 1.17.0610.0
 
 #### Changed
