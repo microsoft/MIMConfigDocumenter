@@ -4,7 +4,7 @@ All notable changes to MIMConfigDocumenter project will be documented in this fi
 
 ------------
 
-### Version 1.17.0824.0
+### Version 1.18.0824.0
 
 #### Fixed
 
