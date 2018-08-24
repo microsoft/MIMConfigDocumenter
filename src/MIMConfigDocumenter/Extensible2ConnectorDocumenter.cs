@@ -17,6 +17,7 @@ namespace MIMConfigDocumenter
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Web.UI;
     using System.Xml.Linq;
@@ -153,9 +154,11 @@ namespace MIMConfigDocumenter
 
                 if (parameterDefinitions != null && parameterValues != null)
                 {
-                    for (var parameterIndex = 0; parameterIndex < parameterDefinitions.Count(); ++parameterIndex)
+                    var parameterIndex = -1;
+                    foreach (var parameterDefinition in parameterDefinitions)
                     {
-                        var parameterDefinition = parameterDefinitions.ElementAt(parameterIndex);
+                        ++parameterIndex;
+
                         var parameterName = (string)parameterDefinition.Element("name");
                         var parameterType = (string)parameterDefinition.Element("type") ?? string.Empty;
                         var parameterValue = string.Empty;
@@ -189,7 +192,7 @@ namespace MIMConfigDocumenter
                                 break;
                         }
 
-                        Documenter.AddRow(parametersTable, new object[] { parameterIndex, parameterName, encrypted ? "******" : parameterValue, encrypted ? "Yes" : "No" });
+                        Documenter.AddRow(parametersTable, new object[] { parameterIndex, parameterName, encrypted ? "******" : WebUtility.HtmlEncode(parameterValue ?? string.Empty), encrypted ? "Yes" : "No" });
                     }
 
                     parametersTable.AcceptChanges();
@@ -244,7 +247,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -334,7 +337,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -446,7 +449,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -520,10 +523,10 @@ namespace MIMConfigDocumenter
 
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                var xpath = "//ma-data[name ='" + this.ConnectorName + "']" + "//ma-partition-data/partition[selected = 1]";
+                var xpath = "/ma-data[name ='" + this.ConnectorName + "']" + "//ma-partition-data/partition[selected = 1]";
 
-                var pilot = this.PilotXml.XPathSelectElements(xpath, Documenter.NamespaceManager);
-                var production = this.ProductionXml.XPathSelectElements(xpath, Documenter.NamespaceManager);
+                var pilot = this.PilotXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(true) + xpath, Documenter.NamespaceManager);
+                var production = this.ProductionXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(false) + xpath, Documenter.NamespaceManager);
 
                 // Sort by name
                 var pilotPartitions = from partition in pilot
@@ -602,7 +605,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -785,7 +788,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -803,10 +806,11 @@ namespace MIMConfigDocumenter
                         if (anchor != null)
                         {
                             var anchorAttributes = anchor.Elements("attribute");
-
-                            for (var attributeIndex = 0; attributeIndex < anchorAttributes.Count(); ++attributeIndex)
+                            var attributeIndex = -1;
+                            foreach (var anchorAttribute in anchorAttributes)
                             {
-                                Documenter.AddRow(table2, new object[] { objectName, (string)anchorAttributes.ElementAt(attributeIndex), attributeIndex });
+                                ++attributeIndex;
+                                Documenter.AddRow(table2, new object[] { objectName, (string)anchorAttribute, attributeIndex });
                             }
                         }
                     }
@@ -881,7 +885,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -891,11 +895,10 @@ namespace MIMConfigDocumenter
                     var table2 = dataSet.Tables[1];
 
                     var runProfileSteps = connector.XPathSelectElements("ma-run-data/run-configuration[name = '" + runProfileName + "']/configuration/step");
-
-                    for (var stepIndex = 1; stepIndex <= runProfileSteps.Count(); ++stepIndex)
+                    var stepIndex = 0;
+                    foreach (var runProfileStep in runProfileSteps)
                     {
-                        var runProfileStep = runProfileSteps.ElementAt(stepIndex - 1);
-
+                        ++stepIndex;
                         var batchSize = (string)runProfileStep.XPathSelectElement("custom-data/extensible2-step-data/batch-size");
                         if (!string.IsNullOrEmpty(batchSize))
                         {

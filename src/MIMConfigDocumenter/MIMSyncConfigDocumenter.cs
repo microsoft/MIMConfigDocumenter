@@ -258,10 +258,8 @@ namespace MIMConfigDocumenter
 
             try
             {
-                const string XPath = "//ma-data";
-
-                var pilot = this.PilotXml.XPathSelectElements(XPath, Documenter.NamespaceManager);
-                var production = this.ProductionXml.XPathSelectElements(XPath, Documenter.NamespaceManager);
+                var pilot = this.PilotXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(true) + "/ma-data", Documenter.NamespaceManager);
+                var production = this.ProductionXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(false) + "/ma-data", Documenter.NamespaceManager);
 
                 // Sort by name
                 pilot = from connector in pilot

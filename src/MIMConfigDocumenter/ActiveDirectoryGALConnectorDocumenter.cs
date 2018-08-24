@@ -239,7 +239,7 @@ namespace MIMConfigDocumenter
                 var table = dataSet.Tables[0];
                 var table2 = dataSet.Tables[1];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -438,7 +438,7 @@ namespace MIMConfigDocumenter
                 var table = dataSet.Tables[0];
                 var table2 = dataSet.Tables[1];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {

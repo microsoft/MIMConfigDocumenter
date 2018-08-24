@@ -447,6 +447,26 @@ namespace MIMConfigDocumenter
         public abstract Tuple<string, string> GetReport();
 
         /// <summary>
+        /// Gets the XPath for "mv-data" node
+        /// </summary>
+        /// <param name="pilotConfig">if set to <c>true</c>, the pilot configuration is loaded. Otherwise, the production configuration is loaded.</param>
+        /// <returns>Returns "mv-data" XPath</returns>
+        protected static string GetMetaverseXmlRootXPath(bool pilotConfig)
+        {
+            return (pilotConfig ? "/Pilot" : "/Production") + "/SyncConfig/saved-mv-configuration";
+        }
+
+        /// <summary>
+        /// Gets the XPath for "ma-data" node
+        /// </summary>
+        /// <param name="pilotConfig">if set to <c>true</c>, the pilot configuration is loaded. Otherwise, the production configuration is loaded.</param>
+        /// <returns>Returns "ma-data" XPath</returns>
+        protected static string GetConnectorXmlRootXPath(bool pilotConfig)
+        {
+            return (pilotConfig ? "/Pilot" : "/Production") + "/SyncConfig/saved-ma-configuration";
+        }
+
+        /// <summary>
         /// Gets the Bookmark code for the specified bookmark text.
         /// </summary>
         /// <param name="text">The Bookmark text.</param>
@@ -733,7 +753,11 @@ namespace MIMConfigDocumenter
                 foreach (var row in modifiedPilotRows)
                 {
                     // Match the unmodified version of the row via the PrimaryKey
-                    var matchInProductionTable = modifiedProductionRows.Where(mondifiedProductionRow => productionTable.PrimaryKey.Aggregate(true, (match, keyColumn) => match && mondifiedProductionRow[keyColumn].Equals(row[keyColumn.Ordinal]))).First();
+                    ////var matchInProductionTable = modifiedProductionRows.Where(mondifiedProductionRow => productionTable.PrimaryKey.Aggregate(true, (match, keyColumn) => match && mondifiedProductionRow[keyColumn].Equals(row[keyColumn.Ordinal]))).First();
+                    // revised query for perf improvements
+                    var matchInProductionTable = (from productionRow in productionTable.AsEnumerable()
+                                                  where productionTable.PrimaryKey.Aggregate(true, (match, keyColumn) => match && productionRow[keyColumn].Equals(row[keyColumn.Ordinal]))
+                                                  select productionRow).First();
                     var newRow = diffgramTable.NewRow();
                     newRow[Documenter.RowStateColumn] = DataRowState.Modified;
 
@@ -1417,8 +1441,24 @@ namespace MIMConfigDocumenter
                 this.ReportWriter.WriteBeginTag("input");
                 this.ReportWriter.WriteAttribute("type", "checkbox");
                 this.ReportWriter.WriteAttribute("id", "OnlyShowChanges");
+                this.ReportWriter.WriteAttribute("disabled", null);
                 this.ReportWriter.WriteAttribute("onclick", "ToggleVisibility();");
                 this.ReportWriter.WriteLine(HtmlTextWriter.SelfClosingTagEnd);
+                this.WriteBreakTag();
+
+                this.ReportWriter.WriteFullBeginTag("strong");
+                this.ReportWriter.Write("Note:");
+                this.ReportWriter.WriteEndTag("strong");
+
+                {
+                    this.ReportWriter.WriteBeginTag("span");
+                    this.ReportWriter.WriteAttribute("class", DataRowState.Unchanged.ToString());
+                    this.ReportWriter.WriteLine(HtmlTextWriter.TagRightChar);
+                    this.ReportWriter.Write("ServiceConfig always only shows changes over the supplied baseline.");
+                    this.ReportWriter.WriteEndTag("span");
+
+                    this.WriteBreakTag();
+                }
 
                 this.WriteBreakTag();
 
@@ -2041,8 +2081,7 @@ namespace MIMConfigDocumenter
                     {
                         this.ReportWriter.WriteBeginTag("col");
                         this.ReportWriter.WriteAttribute("style", "width:" + columnWidth + "%;");
-                        this.ReportWriter.Write(HtmlTextWriter.TagRightChar);
-                        this.ReportWriter.WriteEndTag("col");
+                        this.ReportWriter.Write(HtmlTextWriter.SelfClosingTagEnd);
                     }
                 }
 

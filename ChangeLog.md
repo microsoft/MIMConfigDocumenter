@@ -4,6 +4,15 @@ All notable changes to MIMConfigDocumenter project will be documented in this fi
 
 ------------
 
+### Version 1.17.0824.0
+
+#### Fixed
+
+* Performance improvements. The configuration report should get generated much more quickly now.
+* Fixed an issue where a configuration setting did not rendor correctly if it had html markup characters.
+
+------------
+
 ### Version 1.17.0719.0
 
 #### Fixed

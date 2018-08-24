@@ -159,7 +159,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -167,9 +167,10 @@ namespace MIMConfigDocumenter
 
                     var parameterDefinitions = connector.XPathSelectElements("private-configuration/MAConfig/parameter-definitions/parameter[use = 'schema' and type != 'label' and type != 'divider' and page-number = '" + pageNumber + "']");
 
-                    for (var parameterIndex = 0; parameterIndex < parameterDefinitions.Count(); ++parameterIndex)
+                    var parameterIndex = -1;
+                    foreach (var parameterDefinition in parameterDefinitions)
                     {
-                        var parameterDefinition = parameterDefinitions.ElementAt(parameterIndex);
+                        ++parameterIndex;
                         var parameterName = (string)parameterDefinition.Element("name");
                         var parameter = connector.XPathSelectElement("private-configuration/MAConfig/parameter-values/parameter[@use = 'schema' and @name = '" + parameterName + "' and @page-number = '" + pageNumber + "']");
                         var encrypted = (string)parameter.Attribute("encrypted") == "1";

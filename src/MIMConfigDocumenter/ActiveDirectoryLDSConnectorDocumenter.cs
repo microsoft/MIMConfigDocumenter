@@ -141,7 +141,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {

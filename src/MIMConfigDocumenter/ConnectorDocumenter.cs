@@ -74,8 +74,8 @@ namespace MIMConfigDocumenter
                 this.ConnectorName = connectorName;
                 this.Environment = configEnvironment;
 
-                string xpath = "//ma-data[name ='" + this.ConnectorName + "']";
-                var connector = configEnvironment == ConfigEnvironment.ProductionOnly ? this.ProductionXml.XPathSelectElement(xpath, Documenter.NamespaceManager) : this.PilotXml.XPathSelectElement(xpath, Documenter.NamespaceManager);
+                string xpath = "/ma-data[name ='" + this.ConnectorName + "']";
+                var connector = configEnvironment == ConfigEnvironment.ProductionOnly ? this.ProductionXml.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(false) + xpath, Documenter.NamespaceManager) : this.PilotXml.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(true) + xpath, Documenter.NamespaceManager);
 
                 this.ConnectorGuid = (string)connector.Element("id");
                 this.ConnectorCategory = (string)connector.Element("category");
@@ -281,7 +281,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -402,7 +402,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var mappings = config.XPathSelectElements("//ma-data[name ='" + this.ConnectorName + "']/component_mappings/mapping");
+                var mappings = config.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']/component_mappings/mapping");
 
                 foreach (var mapping in mappings)
                 {
@@ -594,7 +594,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -773,7 +773,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var objectTypes = config.XPathSelectElements("//ma-data[name ='" + this.ConnectorName + "']/ma-partition-data/partition[position() = 1]/filter/object-classes/object-class");
+                var objectTypes = config.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']/ma-partition-data/partition[position() = 1]/filter/object-classes/object-class");
 
                 foreach (var objectType in objectTypes)
                 {
@@ -855,7 +855,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -869,7 +869,7 @@ namespace MIMConfigDocumenter
                         var attributeInfo = connector.XPathSelectElement(".//dsml:attribute-type[dsml:name = '" + attributeName + "']", Documenter.NamespaceManager);
                         if (attributeInfo != null)
                         {
-                            var hasImportFlows = config.XPathSelectElement("//mv-data/import-attribute-flow/import-flow-set/import-flows/import-flow[translate(@src-ma, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + currentConnectorGuid + "' and */src-attribute = '" + attributeName + "']") != null;
+                            var hasImportFlows = config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/import-attribute-flow/import-flow-set/import-flows/import-flow[translate(@src-ma, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + currentConnectorGuid + "' and */src-attribute = '" + attributeName + "']") != null;
                             var hasExportFlows = connector.XPathSelectElement("export-attribute-flow/export-flow-set/export-flow[@cd-attribute =  '" + attributeName + "']") != null;
 
                             var row = table.NewRow();
@@ -1079,7 +1079,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -1098,18 +1098,20 @@ namespace MIMConfigDocumenter
                     {
                         var objectType = (string)filterRule.Attribute("cd-object-type");
                         var filterType = (string)filterRule.Attribute("type");
+                        var importFilter = ((string)filterRule.Attribute("import-filter") ?? string.Empty) == "1";
 
                         if (string.IsNullOrEmpty(objectType))
                         {
                             continue;
                         }
 
-                        Documenter.AddRow(table, new object[] { objectType, filterType });
+                        Documenter.AddRow(table, new object[] { objectType, importFilter ? filterType + "(Import Filter)" : filterType });
 
                         var filterConditons = filterRule.XPathSelectElements("filter-alternative");
-                        for (var filterConditionIndex = 0; filterConditionIndex < filterConditons.Count(); ++filterConditionIndex)
+                        var filterConditionIndex = 0;
+                        foreach (var filterConditon in filterConditons)
                         {
-                            var filterConditon = filterConditons.ElementAt(filterConditionIndex);
+                            ++filterConditionIndex;
 
                             Documenter.AddRow(table2, new object[] { objectType, filterConditionIndex + 1 });
 
@@ -1406,7 +1408,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -1424,10 +1426,12 @@ namespace MIMConfigDocumenter
                     }
 
                     var sourceObjectTypePrevious = "!Uninitialised!";
-                    var mappingGroupIndex = 1;
-                    for (var joinProfileIndex = 0; joinProfileIndex < joinProfiles.Count(); ++joinProfileIndex)
+                    var mappingGroupIndex = 0;
+                    var joinProfileIndex = 0;
+                    foreach (var joinProfile in joinProfiles)
                     {
-                        var joinProfile = joinProfiles.ElementAt(joinProfileIndex);
+                        ++joinProfileIndex;
+
                         var sourceObjectType = (string)joinProfile.Attribute("cd-object-type");
 
                         var joinCriteria = joinProfile.Elements("join-criterion");
@@ -1578,7 +1582,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -1686,23 +1690,24 @@ namespace MIMConfigDocumenter
 
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                var pilotConnectorId = ((string)this.PilotXml.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']/id") ?? string.Empty).ToUpperInvariant();
-                var productionConnectorId = ((string)this.ProductionXml.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']/id") ?? string.Empty).ToUpperInvariant();
+                var pilotConnectorId = ((string)this.PilotXml.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(true) + "/ma-data[name ='" + this.ConnectorName + "']/id") ?? string.Empty).ToUpperInvariant();
+                var productionConnectorId = ((string)this.ProductionXml.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(false) + "/ma-data[name ='" + this.ConnectorName + "']/id") ?? string.Empty).ToUpperInvariant();
 
-                const string ImportFlowSetXPath = "//mv-data/import-attribute-flow/import-flow-set";
+                var pilotImportFlowSetXPath = Documenter.GetMetaverseXmlRootXPath(true) + "/mv-data/import-attribute-flow/import-flow-set";
+                var productionImportFlowSetXPath = Documenter.GetMetaverseXmlRootXPath(false) + "/mv-data/import-attribute-flow/import-flow-set";
                 var pilotConnectorIdXPath = "translate(@src-ma, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + pilotConnectorId + "'";
                 var productionConnectorIdXPath = "translate(@src-ma, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + productionConnectorId + "'";
 
-                var pilotSourceObjectTypesXPath = ImportFlowSetXPath + "/import-flows/import-flow[" + pilotConnectorIdXPath + "]";
-                var productionSourceObjectTypesXPath = ImportFlowSetXPath + "/import-flows/import-flow[" + productionConnectorIdXPath + "]";
-                var pilotMetaverseObjectTypesXPath = ImportFlowSetXPath + "[count(import-flows/import-flow[ " + pilotConnectorIdXPath + "]) != 0]";
-                var productionMetaverseObjectTypesXPath = ImportFlowSetXPath + "[count(import-flows/import-flow[ " + productionConnectorIdXPath + "]) != 0]";
+                var pilotSourceObjectTypesXPath = pilotImportFlowSetXPath + "/import-flows/import-flow[" + pilotConnectorIdXPath + "]";
+                var productionSourceObjectTypesXPath = productionImportFlowSetXPath + "/import-flows/import-flow[" + productionConnectorIdXPath + "]";
+                var pilotMetaverseObjectTypesXPath = pilotImportFlowSetXPath + "[count(import-flows/import-flow[ " + pilotConnectorIdXPath + "]) != 0]";
+                var productionMetaverseObjectTypesXPath = productionImportFlowSetXPath + "[count(import-flows/import-flow[ " + productionConnectorIdXPath + "]) != 0]";
 
                 var pilotSourceObjectTypes = from importFlow in this.PilotXml.XPathSelectElements(pilotSourceObjectTypesXPath, Documenter.NamespaceManager)
                                              let sourceObjectType = (string)importFlow.Attribute("cd-object-type")
                                              select sourceObjectType;
 
-                var pilotSourceObjectTypes2 = from exportFlowSet in this.PilotXml.XPathSelectElements("//ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
+                var pilotSourceObjectTypes2 = from exportFlowSet in this.PilotXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(true) + "/ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
                                               let sourceObjectType = (string)exportFlowSet.Attribute("cd-object-type")
                                               select sourceObjectType;
 
@@ -1710,7 +1715,7 @@ namespace MIMConfigDocumenter
                                                   let sourceObjectType = (string)importFlow.Attribute("cd-object-type")
                                                   select sourceObjectType;
 
-                var productionSourceObjectTypes2 = from exportFlowSet in this.ProductionXml.XPathSelectElements("//ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
+                var productionSourceObjectTypes2 = from exportFlowSet in this.ProductionXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(false) + "/ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
                                                    let sourceObjectType = (string)exportFlowSet.Attribute("cd-object-type")
                                                    select sourceObjectType;
 
@@ -1720,7 +1725,7 @@ namespace MIMConfigDocumenter
                                                 let metaverseObjectType = (string)importFlowSet.Attribute("mv-object-type")
                                                 select metaverseObjectType;
 
-                var pilotMetaverseObjectTypes2 = from exportFlowSet in this.PilotXml.XPathSelectElements("//ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
+                var pilotMetaverseObjectTypes2 = from exportFlowSet in this.PilotXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(true) + "/ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
                                                  let metaverseObjectType = (string)exportFlowSet.Attribute("mv-object-type")
                                                  select metaverseObjectType;
 
@@ -1728,7 +1733,7 @@ namespace MIMConfigDocumenter
                                                      let name = (string)importFlowSet.Attribute("mv-object-type")
                                                      select name;
 
-                var productionMetaverseObjectTypes2 = from exportFlowSet in this.ProductionXml.XPathSelectElements("//ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
+                var productionMetaverseObjectTypes2 = from exportFlowSet in this.ProductionXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(false) + "/ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set")
                                                       let metaverseObjectType = (string)exportFlowSet.Attribute("mv-object-type")
                                                       select metaverseObjectType;
 
@@ -1744,15 +1749,15 @@ namespace MIMConfigDocumenter
                     {
                         this.currentMetaverseObjectType = metaverseObjectType;
 
-                        var pilotHasImportFlowsXPath = ImportFlowSetXPath + "[@mv-object-type = '" + this.currentMetaverseObjectType + "' and count(import-flows/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + pilotConnectorIdXPath + "])]";
-                        var productionHasImportFlowsXPath = ImportFlowSetXPath + "[@mv-object-type = '" + this.currentMetaverseObjectType + "' and count(import-flows/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + productionConnectorIdXPath + "])]";
-                        var exportFlowsXPath = "//ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set[@mv-object-type = '" + this.currentMetaverseObjectType + "' and @cd-object-type = '" + this.currentDataSourceObjectType + "']/export-flow";
+                        var pilotHasImportFlowsXPath = pilotImportFlowSetXPath + "[@mv-object-type = '" + this.currentMetaverseObjectType + "' and count(import-flows/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + pilotConnectorIdXPath + "])]";
+                        var productionHasImportFlowsXPath = productionImportFlowSetXPath + "[@mv-object-type = '" + this.currentMetaverseObjectType + "' and count(import-flows/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + productionConnectorIdXPath + "])]";
+                        var exportFlowsXPath = "/ma-data[name ='" + this.ConnectorName + "']/export-attribute-flow/export-flow-set[@mv-object-type = '" + this.currentMetaverseObjectType + "' and @cd-object-type = '" + this.currentDataSourceObjectType + "']/export-flow";
 
                         // Ignore the source object type and metaverse object type pair if there are no flows configured
                         var pilotHasImportFlows = this.PilotXml.XPathSelectElement(pilotHasImportFlowsXPath) != null;
                         var productionHasImportFlows = this.ProductionXml.XPathSelectElement(productionHasImportFlowsXPath) != null;
-                        var pilotHasExportFlows = this.PilotXml.XPathSelectElement(exportFlowsXPath) != null;
-                        var productionHasExportFlows = this.ProductionXml.XPathSelectElement(exportFlowsXPath) != null;
+                        var pilotHasExportFlows = this.PilotXml.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(true) + exportFlowsXPath) != null;
+                        var productionHasExportFlows = this.ProductionXml.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(false) + exportFlowsXPath) != null;
 
                         if (!pilotHasImportFlows && !productionHasImportFlows && !pilotHasExportFlows && !productionHasExportFlows)
                         {
@@ -1761,7 +1766,7 @@ namespace MIMConfigDocumenter
 
                         connectorHasFlowsConfigured = true;
 
-                        var arrows = (pilotHasImportFlows || productionHasImportFlows ? "&#8594" : string.Empty) + (pilotHasExportFlows || productionHasExportFlows ? "&#8592;" : string.Empty);
+                        var arrows = (pilotHasImportFlows || productionHasImportFlows ? "&#8594;" : string.Empty) + (pilotHasExportFlows || productionHasExportFlows ? "&#8592;" : string.Empty);
                         var sectionTitle2 = this.currentDataSourceObjectType + arrows + this.currentMetaverseObjectType;
 
                         this.WriteSectionHeader(sectionTitle2, 4);
@@ -1825,13 +1830,13 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
                     var connectorId = ((string)connector.Element("id") ?? string.Empty).ToUpperInvariant();
                     var connectorIdXPath = "translate(@src-ma, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "'";
-                    var importFlowsXPath = "//mv-data/import-attribute-flow/import-flow-set" + "[@mv-object-type = '" + this.currentMetaverseObjectType + "']/import-flows/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + connectorIdXPath + "]";
+                    var importFlowsXPath = Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/import-attribute-flow/import-flow-set" + "[@mv-object-type = '" + this.currentMetaverseObjectType + "']/import-flows/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + connectorIdXPath + "]";
                     var metaverseAttributes = from importFlow in connector.XPathSelectElements(importFlowsXPath)
                                               let metaverseAttribute = (string)importFlow.Parent.Attribute("mv-attribute")
                                               orderby metaverseAttribute
@@ -1846,14 +1851,16 @@ namespace MIMConfigDocumenter
                     var previousMetaverseAttribute = string.Empty;
                     foreach (var metaverseAttribute in metaverseAttributes.Distinct())
                     {
-                        var allImportFlowsXPath = "//mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentMetaverseObjectType + "']/import-flows[@mv-attribute = '" + metaverseAttribute + "']";
+                        var allImportFlowsXPath = Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentMetaverseObjectType + "']/import-flows[@mv-attribute = '" + metaverseAttribute + "']";
                         var precedenceType = config.XPathSelectElement(allImportFlowsXPath) != null ? (string)config.XPathSelectElement(allImportFlowsXPath).Attribute("type") : string.Empty;
                         var allImportFlows = config.XPathSelectElements(allImportFlowsXPath + "/import-flow");
 
                         var importFlowRank = 0;
-                        for (var importFlowIndex = 0; importFlowIndex < allImportFlows.Count(); ++importFlowIndex)
+                        var importFlowIndex = 0;
+                        foreach (var importFlow in allImportFlows)
                         {
-                            var importFlow = allImportFlows.ElementAt(importFlowIndex);
+                            ++importFlowIndex;
+
                             var importFlowConnectorId = ((string)importFlow.Attribute("src-ma") ?? string.Empty).ToUpperInvariant();
 
                             importFlowRank = precedenceType.Equals("ranked", StringComparison.OrdinalIgnoreCase) ? importFlowRank + 1 : 0;
@@ -2015,7 +2022,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -2032,9 +2039,11 @@ namespace MIMConfigDocumenter
 
                     var exportFlowRuleIndex = 0; // This will be the relative rule number if there are more than one outbound sync rule export flows for the same data source attribute.
                     var previousDataSourceAttribute = string.Empty;
-                    for (var exportFlowIndex = 0; exportFlowIndex < exportFlows.Count(); ++exportFlowIndex)
+                    var exportFlowIndex = 0;
+                    foreach (var exportFlow in exportFlows)
                     {
-                        var exportFlow = exportFlows.ElementAt(exportFlowIndex);
+                        ++exportFlowIndex;
+
                         var dataSourceAttribute = (string)exportFlow.Attribute("cd-attribute");
 
                         exportFlowRuleIndex = dataSourceAttribute == previousDataSourceAttribute ? exportFlowRuleIndex + 1 : 0;
@@ -2153,10 +2162,10 @@ namespace MIMConfigDocumenter
 
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                var xpath = "//ma-data[name ='" + this.ConnectorName + "']/ma-run-data/run-configuration";
+                var xpath = "/ma-data[name ='" + this.ConnectorName + "']/ma-run-data/run-configuration";
 
-                var pilot = this.PilotXml.XPathSelectElements(xpath, Documenter.NamespaceManager);
-                var production = this.ProductionXml.XPathSelectElements(xpath, Documenter.NamespaceManager);
+                var pilot = this.PilotXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(true) + xpath, Documenter.NamespaceManager);
+                var production = this.ProductionXml.XPathSelectElements(Documenter.GetConnectorXmlRootXPath(false) + xpath, Documenter.NamespaceManager);
 
                 var connectorHasRunProfilesConfigured = false;
 
@@ -2334,7 +2343,7 @@ namespace MIMConfigDocumenter
                 var config = pilotConfig ? this.PilotXml : this.ProductionXml;
                 var dataSet = pilotConfig ? this.PilotDataSet : this.ProductionDataSet;
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -2343,9 +2352,10 @@ namespace MIMConfigDocumenter
 
                     var runProfileSteps = connector.XPathSelectElements("ma-run-data/run-configuration[name = '" + runProfileName + "']/configuration/step");
 
-                    for (var stepIndex = 1; stepIndex <= runProfileSteps.Count(); ++stepIndex)
+                    var stepIndex = 0;
+                    foreach (var runProfileStep in runProfileSteps)
                     {
-                        var runProfileStep = runProfileSteps.ElementAt(stepIndex - 1);
+                        ++stepIndex;
 
                         var runProfileStepType = ConnectorDocumenter.GetRunProfileStepType(runProfileStep.Element("step-type"));
 
@@ -2479,7 +2489,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -2511,7 +2521,7 @@ namespace MIMConfigDocumenter
 
                     var connectorId = ((string)connector.Element("id") ?? string.Empty).ToUpperInvariant();
                     var connectorIdXPath = "translate(@ma-id, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "'";
-                    var enableAttributeRecall = ((string)config.XPathSelectElement("//mv-data/import-attribute-flow/per-ma-options/ma-options[" + connectorIdXPath + "]/enable-recall") ?? string.Empty).Equals("true", StringComparison.OrdinalIgnoreCase) ? "No" : "Yes";
+                    var enableAttributeRecall = ((string)config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/import-attribute-flow/per-ma-options/ma-options[" + connectorIdXPath + "]/enable-recall") ?? string.Empty).Equals("true", StringComparison.OrdinalIgnoreCase) ? "No" : "Yes";
 
                     Documenter.AddRow(table, new object[] { 1, "Do not recall attributes contributed by an object from this MA when it is disconnected", enableAttributeRecall });
 
@@ -2615,7 +2625,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -2713,7 +2723,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {
@@ -2827,7 +2837,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var connector = config.XPathSelectElement("//ma-data[name ='" + this.ConnectorName + "']");
+                var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[name ='" + this.ConnectorName + "']");
 
                 if (connector != null)
                 {

@@ -1,4 +1,8 @@
-﻿function ToggleVisibility() {
+﻿window.onload = function (e) {
+    document.getElementById("OnlyShowChanges").disabled = false;
+}
+
+function ToggleVisibility() {
     var x = document.getElementById("OnlyShowChanges");
     var elements = document.getElementsByClassName("CanHide");
     for (var i = 0; i < elements.length; ++i) {
@@ -8,14 +12,5 @@
         else {
             elements[i].style.display = "";
         }
-    }
-
-    var downloadLink = document.getElementById("DownloadLink");
-    if (x.checked == true) {
-        downloadLink.style.display = "";
-        DownloadScript(downloadLink);
-    }
-    else {
-        downloadLink.style.display = "none";
     }
 }

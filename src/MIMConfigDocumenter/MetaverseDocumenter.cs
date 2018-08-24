@@ -114,9 +114,8 @@ namespace MIMConfigDocumenter
 
                 this.WriteSectionHeader(sectionTitle, 3);
 
-                const string XPath = "//mv-data//dsml:class";
-                var pilot = this.PilotXml.XPathSelectElements(XPath, Documenter.NamespaceManager);
-                var production = this.ProductionXml.XPathSelectElements(XPath, Documenter.NamespaceManager);
+                var pilot = this.PilotXml.XPathSelectElements(Documenter.GetMetaverseXmlRootXPath(true) + "/mv-data//dsml:class", Documenter.NamespaceManager);
+                var production = this.ProductionXml.XPathSelectElements(Documenter.GetMetaverseXmlRootXPath(false) + "/mv-data//dsml:class", Documenter.NamespaceManager);
 
                 // Sort by name
                 var pilotObjectTypes = from objectType in pilot
@@ -129,8 +128,8 @@ namespace MIMConfigDocumenter
                     this.currentObjectType = objectType;
 
                     // Ignore the object type if there are no import flows configured
-                    var pilotHasImportFlows = this.PilotXml.XPathSelectElement("//mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentObjectType + "']") != null;
-                    var productionHasImportFlows = this.ProductionXml.XPathSelectElement("//mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentObjectType + "']") != null;
+                    var pilotHasImportFlows = this.PilotXml.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(true) + "/mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentObjectType + "']") != null;
+                    var productionHasImportFlows = this.ProductionXml.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(false) + "/mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentObjectType + "']") != null;
                     if (!pilotHasImportFlows && !productionHasImportFlows)
                     {
                         continue;
@@ -336,7 +335,7 @@ namespace MIMConfigDocumenter
                 var table = dataSet.Tables[0];
                 var table2 = dataSet.Tables[1];
 
-                var attributes = config.XPathSelectElements("//mv-data//dsml:class[dsml:name = '" + this.currentObjectType + "' ]/dsml:attribute", Documenter.NamespaceManager);
+                var attributes = config.XPathSelectElements(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//dsml:class[dsml:name = '" + this.currentObjectType + "' ]/dsml:attribute", Documenter.NamespaceManager);
 
                 // Sort by name
                 attributes = from attribute in attributes
@@ -354,7 +353,7 @@ namespace MIMConfigDocumenter
 
                     Logger.Instance.WriteInfo("Processing Attribute Information.");
 
-                    var attributeInfo = config.XPathSelectElement("//mv-data//dsml:attribute-type[dsml:name = '" + attributeName + "']", Documenter.NamespaceManager);
+                    var attributeInfo = config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//dsml:attribute-type[dsml:name = '" + attributeName + "']", Documenter.NamespaceManager);
 
                     var attributeSyntax = (string)attributeInfo.Element(Documenter.DsmlNamespace + "syntax");
 
@@ -370,7 +369,7 @@ namespace MIMConfigDocumenter
                     Logger.Instance.WriteVerbose("Processed Attribute Information.");
 
                     // Fetch Import Flows
-                    var importFlowsXPath = "//mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentObjectType + "']/import-flows[@mv-attribute = '" + attributeName + "']";
+                    var importFlowsXPath = Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentObjectType + "']/import-flows[@mv-attribute = '" + attributeName + "']";
                     var precedenceType = config.XPathSelectElement(importFlowsXPath) != null ? (string)config.XPathSelectElement(importFlowsXPath).Attribute("type") : string.Empty;
                     var importFlows = config.XPathSelectElements(importFlowsXPath + "/import-flow");
                     for (var importFlowIndex = 0; importFlowIndex < importFlows.Count(); ++importFlowIndex)
@@ -392,8 +391,8 @@ namespace MIMConfigDocumenter
                         }
 
                         var connectorId = ((string)importFlow.Attribute("src-ma") ?? string.Empty).ToUpperInvariant();
-                        var connectorName = (string)config.XPathSelectElement("//ma-data[translate(id, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "']/name");
-                        row2[3] = connectorName;
+                        var connectorName = (string)config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[translate(id, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "']/name");
+                        row2[3] = connectorName ?? connectorId;
 
                         var connectorObjectType = (string)importFlow.Attribute("cd-object-type");
                         row2[4] = connectorObjectType;
@@ -454,7 +453,7 @@ namespace MIMConfigDocumenter
 
                             var syncRuleId = (string)importFlow.XPathSelectElement("sync-rule-mapping").Attribute("sync-rule-id") ?? string.Empty;
 
-                            var connector = config.XPathSelectElement("//ma-data[id ='" + connectorId + "']");
+                            var connector = config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[id ='" + connectorId + "']");
 
                             foreach (var scope in connector.XPathSelectElements("join/join-profile/join-criterion[@sync-rule-id='" + syncRuleId + "']/scoping/scope"))
                             {
@@ -600,9 +599,8 @@ namespace MIMConfigDocumenter
             {
                 Logger.Instance.WriteInfo("Processing Metaverse Object Deletion Rules Summary");
 
-                const string XPath = "//mv-data//dsml:class";
-                var pilot = this.PilotXml.XPathSelectElements(XPath, Documenter.NamespaceManager);
-                var production = this.ProductionXml.XPathSelectElements(XPath, Documenter.NamespaceManager);
+                var pilot = this.PilotXml.XPathSelectElements(Documenter.GetMetaverseXmlRootXPath(true) + "/mv-data//dsml:class", Documenter.NamespaceManager);
+                var production = this.ProductionXml.XPathSelectElements(Documenter.GetMetaverseXmlRootXPath(false) + "/mv-data//dsml:class", Documenter.NamespaceManager);
 
                 // Sort by name
                 var pilotObjectTypes = from objectType in pilot
@@ -773,7 +771,7 @@ namespace MIMConfigDocumenter
                 var table = dataSet.Tables[0];
                 var table2 = dataSet.Tables[1];
 
-                var deletionRule = config.XPathSelectElement("//mv-data/mv-deletion/mv-deletion-rule[@mv-object-type = '" + objectType + "']");
+                var deletionRule = config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/mv-deletion/mv-deletion-rule[@mv-object-type = '" + objectType + "']");
 
                 if (deletionRule != null)
                 {
@@ -797,7 +795,7 @@ namespace MIMConfigDocumenter
                     foreach (var connector in deletionRule.Elements("src-ma"))
                     {
                         var connectorId = ((string)connector ?? string.Empty).ToUpperInvariant();
-                        var connectorName = (string)config.XPathSelectElement("//ma-data[translate(id, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "']/name");
+                        var connectorName = (string)config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[translate(id, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "']/name");
 
                         var row2 = table2.NewRow();
 
@@ -965,7 +963,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                var assemblyName = (string)config.XPathSelectElement("//mv-data//extension/assembly-name") ?? string.Empty;
+                var assemblyName = (string)config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//extension/assembly-name") ?? string.Empty;
 
                 if (string.IsNullOrEmpty(assemblyName))
                 {
@@ -975,8 +973,8 @@ namespace MIMConfigDocumenter
                 {
                     Documenter.AddRow(table, new object[] { "Enable metaverse rules extension", "Yes" });
                     Documenter.AddRow(table, new object[] { "Rules extension name", assemblyName });
-                    Documenter.AddRow(table, new object[] { "Run this rules extension in a separate process", config.XPathSelectElement("//mv-data//extension[application-protection = 'high']") != null ? "Yes" : "No" });
-                    Documenter.AddRow(table, new object[] { "Enable Provisioning Rules Extension", config.XPathSelectElement("//mv-data//provisioning[@type = 'both' or @type = 'scripted']") != null ? "Yes" : "No" });
+                    Documenter.AddRow(table, new object[] { "Run this rules extension in a separate process", config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//extension[application-protection = 'high']") != null ? "Yes" : "No" });
+                    Documenter.AddRow(table, new object[] { "Enable Provisioning Rules Extension", config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//provisioning[@type = 'both' or @type = 'scripted']") != null ? "Yes" : "No" });
                 }
 
                 table.AcceptChanges();
@@ -1055,7 +1053,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                Documenter.AddRow(table, new object[] { "Enable Synchronization Rules Provisioning", config.XPathSelectElement("//mv-data//provisioning[@type = 'both' or @type = 'sync-rule']") != null ? "Yes" : "No" });
+                Documenter.AddRow(table, new object[] { "Enable Synchronization Rules Provisioning", config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//provisioning[@type = 'both' or @type = 'sync-rule']") != null ? "Yes" : "No" });
 
                 table.AcceptChanges();
             }
@@ -1133,7 +1131,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                Documenter.AddRow(table, new object[] { "Unload extension if the duration of single operation exceeds (seconds)", (string)config.XPathSelectElement("//mv-data//extension/timeout") });
+                Documenter.AddRow(table, new object[] { "Unload extension if the duration of single operation exceeds (seconds)", (string)config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data//extension/timeout") });
 
                 table.AcceptChanges();
             }
@@ -1211,7 +1209,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                Documenter.AddRow(table, new object[] { "Save last x password change/set event details", (string)config.XPathSelectElement("//mv-data/password-change-history-size") });
+                Documenter.AddRow(table, new object[] { "Save last x password change/set event details", (string)config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/password-change-history-size") });
 
                 table.AcceptChanges();
             }
@@ -1289,7 +1287,7 @@ namespace MIMConfigDocumenter
 
                 var table = dataSet.Tables[0];
 
-                Documenter.AddRow(table, new object[] { "Enable Password Synchronization", config.XPathSelectElement("//mv-data/password-sync[password-sync-enabled = '1']") != null ? "Yes" : "No" });
+                Documenter.AddRow(table, new object[] { "Enable Password Synchronization", config.XPathSelectElement(Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/password-sync[password-sync-enabled = '1']") != null ? "Yes" : "No" });
 
                 table.AcceptChanges();
             }

@@ -1594,7 +1594,7 @@ namespace MIMConfigDocumenter
 
                             if (optionValue != "{x:Null}" && optionValue != "00000000-0000-0000-0000-000000000000" && selectedOption != "Name" && selectedOption != "ActivityDisplayName")
                             {
-                                Documenter.AddRow(activitySelectedOptionsTable, new object[] { activityIndex, selectedOption, optionValueMarkup, optionValue });
+                                Documenter.AddRow(activitySelectedOptionsTable, new object[] { activityIndex, selectedOption, WebUtility.HtmlEncode(optionValueMarkup), optionValue });
                             }
                         }
 
@@ -1653,11 +1653,11 @@ namespace MIMConfigDocumenter
 
                     if (activityValueExpressionsTable.Columns.Count == 5)
                     {
-                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, expressionIndex });
+                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? WebUtility.HtmlEncode(valueExpression.Value) : null, target != null ? target.Value : null, expressionIndex });
                     }
                     else
                     {
-                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? valueExpression.Value : null, target != null ? target.Value : null, allowNull != null ? allowNull.Value : null, expressionIndex });
+                        Documenter.AddRow(activityValueExpressionsTable, new object[] { activityIndex, sectionIndex, valueExpression != null ? WebUtility.HtmlEncode(valueExpression.Value) : null, target != null ? target.Value : null, allowNull != null ? allowNull.Value : null, expressionIndex });
                     }
                 }
             }
