@@ -3,13 +3,20 @@
 All notable changes to MIMConfigDocumenter project will be documented in this file. The "Unreleased" section at the top is for keeping track of important changes that might make it to upcoming releases.
 
 ------------
+### Version 1.18.0921.0
+
+#### Fixed
+
+* Service Config report generation may crash if the config value resulted in invalid XPath query string.
+
+------------
 
 ### Version 1.18.0824.0
 
 #### Fixed
 
 * Performance improvements. The configuration report should get generated much more quickly now.
-* Fixed an issue where a configuration setting did not rendor correctly if it had html markup characters.
+* Fixed an issue where a configuration setting did not render correctly if it had html mark-up characters.
 
 ------------
 

@@ -525,7 +525,7 @@ namespace MIMConfigDocumenter
         protected bool TestAttributeValueChange(string attributeName, string attributeValue, DataRowState attributeOperation, string locale)
         {
             var operation = attributeOperation == DataRowState.Modified ? "Replace" : attributeOperation == DataRowState.Added ? "Add" : attributeOperation == DataRowState.Deleted ? "Delete" : "Unknown";
-            return this.CurrentChangeObject.XPathSelectElement("Changes/ImportChange[AttributeName = '" + attributeName + "' and AttributeValue = '" + attributeValue + "' and Operation = '" + operation + (locale != ServiceCommonDocumenter.InvariantLocale ? "' and Locale = '" + locale : string.Empty + "']")) != null;
+            return this.CurrentChangeObject.XPathSelectElement("Changes/ImportChange[AttributeName = '" + attributeName + "' and AttributeValue = " + Documenter.GetEscapedXPathStringForAttributeValue(attributeValue) + " and Operation = '" + operation + (locale != ServiceCommonDocumenter.InvariantLocale ? "' and Locale = '" + locale : string.Empty + "']")) != null;
         }
 
         /// <summary>
@@ -713,6 +713,13 @@ namespace MIMConfigDocumenter
                 }
 
                 return attributeChange;
+            }
+            catch (XPathException e)
+            {
+                var errorMsg = e.Message + "Attribute Name : '" + attributeName + "'. " + e.StackTrace;
+                Logger.Instance.WriteError(errorMsg);
+
+                return new AttributeChange(attributeName);
             }
             finally
             {
