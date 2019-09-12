@@ -1,24 +1,38 @@
 # MIM Configuration Documenter
 
-MIM configuration documenter is a tool to generate documentation of a MIM / FIM synchronization or service installation.
+The MIM Configuration Documenter is a tool used to generate documentation of a Microsoft Identity Manager (MIM) or Forefront Identity Manager (FIM) deployemt (both the Synchronization Service as well as the Service and Portal environments).
 
-The goal of this project is to:
+## Project goals:
 
-* Document deployment configuration details for the MIM / FIM solution!
-* Track any configuration changes you have made since a specific baseline!!
-* Build confidence in getting things right when making changes to the deployed solution!!
+* Document deployment configuration details for the MIM / FIM solution.
+* Track configuration changes you have made since a specific baseline.
+* Build confidence in getting things right when making changes to the deployed solution.
 
-Prerequisites:
+## Prerequisites:
 
 1. .NET Framework 4.5 to be able to run the tool.
-2. FIMAutomation PowerShell snap-in installed locally when generating report for FIMService config.
+2. [FIMAutomation](https://docs.microsoft.com/en-us/powershell/module/fimautomation/?view=idm-ps-2016sp1) PowerShell snap-in installed locally when generating report for FIMService config.
 3. A modern browser (e.g. Microsoft Edge) to view the report.
 
-How to use the tool:
+## Obtaining and testing the tool:
 
-* Download the latest release MIMConfigDocumenter.zip from the [releases](https://github.com/Microsoft/MIMConfigDocumenter/releases) tab under the Code tab tab, UNBLOCK the downloaded zip file and extract the zip file to an empty local folder.
-	* This will extract the Documenter application binaries along with the sample data files for "Contoso".
-	* Make sure that the tool runs by running the PowerShell script InvokeDocumenter-Contoso.ps1.
+* Download the latest release of your choice from the [releases](https://github.com/Microsoft/MIMConfigDocumenter/releases) section under the Code tab in the project. We recommend downloading the MIMConfigDocumenter.zip file
+* Be sure to *Unblock* the downloaded zip file before extracting the contents to an empty local folder. This process will extract the MIM Configuration Documenter application binaries, along with sample data files for the Contoso corporation.
+* Test the tool by executing the included PowerShell script InvokeDocumenter-Contoso.ps1.
+
+## Using the tool:
+
+To generate documentation, the MIM Configuration Documenter compares any provided point in time configuration export, with another. The difference between the two configurations is used to generate the report. Several baseline configurations are provided for convenience. These includes:
+
+* FIM-Base_4.0.3684.2
+* FIM-R2-SP1-Base_4.1.3419.0
+* FIM-R2-SP1-Base_4.1.3461.0
+* FIM-R2
+* MIM-SP1-Base_4.4.1302.0
+* MIM-SP1-Base_4.4.1459.0
+
+ with one of the baseline exports provided; or 
+
 * Export the FIM Sync Server and FIM Service Configuration of your two environments: PILOT / TARGET / END-STATE environment and PRODUCTION / BASELINE / REFERENCE environment.
 	* FIM Sync Server configuration is exported using File | Export Server Configuration menu in the FIM Sync Admin console.
 	* FIM Service configuration is exported using the ExportSchema.ps1 and ExportPolicy.ps1 scripts.
