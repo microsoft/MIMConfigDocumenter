@@ -19,13 +19,27 @@
 		Edit the $pilotConfig and $productionConfig (and $reportType) variables appropriately.
 #>
 
+Param(
+    [Parameter(Mandatory,
+        HelpMessage = 'Path of the Pilot / Target config export files relative to the MIM Configuration Documenter "Data" folder.')]
+    [String]
+    $PilotConfig = "Contoso\Pilot",
+
+    [Parameter(Mandatory,
+        HelpMessage = 'Path of the Production / Baseline config export files relative to the MIM Configuration Documenter "Data" folder.')]
+    [String]
+    $ProductionConfig = "FIM-R2-SP1-Base_4.1.3419.0",
+
+    [Parameter(Mandatory,
+        HelpMessage = 'Report type.')]
+    [ValidateSet("SyncAndService", "SyncOnly", "ServiceOnly")]
+    [String]
+    $ReportType = "SyncAndService"
+)
+
+
 Set-StrictMode -Version "2.0"
 
-######## Edit as appropriate ####################################
-$pilotConfig = "Contoso\Pilot" # the path of the Pilot / Target config export files relative to the MIM Configuration Documenter "Data" folder.
-$productionConfig = "FIM-R2-SP1-Base_4.1.3419.0" # the path of the Production / Baseline config export files relative to the MIM Configuration Documenter "Data" folder.
-$reportType = "SyncAndService" # "SyncOnly" # "ServiceOnly"
-#################################################################
 
 $global:VerbosePreference = "Continue"
 $documenterModuleName = "MIMConfigDocumenter"
@@ -44,7 +58,7 @@ if (Get-Module -Name $documenterModuleName)
 Import-Module -Name (Join-Path -Path $PWD -ChildPath "$documenterModuleName.psm1") -ErrorAction Stop
 
 Write-Host "Invoking cmdlet: Get-MIMConfigReport..."
-Get-MIMConfigReport -PilotConfig $pilotConfig -ProductionConfig $productionConfig -ReportType $reportType
-Write-Host "Invokation complete! Please check any errors or warnings in the MIMConfigDocumenter-Error.log..."
+Get-MIMConfigReport -PilotConfig $PilotConfig -ProductionConfig $ProductionConfig -ReportType $ReportType
+Write-Host "Invocation complete! Please check any errors or warnings in the MIMConfigDocumenter-Error.log..."
 
 Read-Host "Press any key to exit"
