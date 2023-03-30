@@ -1853,7 +1853,7 @@ namespace MIMConfigDocumenter
                     {
                         var allImportFlowsXPath = Documenter.GetMetaverseXmlRootXPath(pilotConfig) + "/mv-data/import-attribute-flow/import-flow-set[@mv-object-type = '" + this.currentMetaverseObjectType + "']/import-flows[@mv-attribute = '" + metaverseAttribute + "']";
                         var precedenceType = config.XPathSelectElement(allImportFlowsXPath) != null ? (string)config.XPathSelectElement(allImportFlowsXPath).Attribute("type") : string.Empty;
-                        var allImportFlows = config.XPathSelectElements(allImportFlowsXPath + "/import-flow");
+                        var allImportFlows = config.XPathSelectElements(allImportFlowsXPath + "/import-flow[@cd-object-type = '" + this.currentDataSourceObjectType + "' and " + connectorIdXPath + "]");
 
                         var importFlowRank = 0;
                         var importFlowIndex = 0;
@@ -1864,12 +1864,6 @@ namespace MIMConfigDocumenter
                             var importFlowConnectorId = ((string)importFlow.Attribute("src-ma") ?? string.Empty).ToUpperInvariant();
 
                             importFlowRank = precedenceType.Equals("ranked", StringComparison.OrdinalIgnoreCase) ? importFlowRank + 1 : 0;
-
-                            if (importFlowConnectorId != connectorId)
-                            {
-                                continue;
-                            }
-
                             importFlowRuleIndex = metaverseAttribute == previousMetaverseAttribute ? importFlowRuleIndex + 1 : 0;
                             previousMetaverseAttribute = metaverseAttribute;
 

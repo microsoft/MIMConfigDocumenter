@@ -776,23 +776,25 @@ namespace MIMConfigDocumenter
                 if (deletionRule != null)
                 {
                     var deletionRuleType = (string)deletionRule.Attribute("type") ?? string.Empty;
+                    var deletionRuleTypeText = deletionRuleType;
 
                     if (deletionRuleType.Equals("scripted", StringComparison.OrdinalIgnoreCase))
                     {
-                        deletionRuleType = "Rules Extension";
+                        deletionRuleTypeText = "Rules Extension";
                     }
                     else if (deletionRuleType.Equals("declared-any", StringComparison.OrdinalIgnoreCase))
                     {
-                        deletionRuleType = "Delete the metaverse object when connector from any of the following management agents is disconnected";
+                        deletionRuleTypeText = "Delete the metaverse object when connector from any of the following management agents is disconnected";
                     }
                     else if (deletionRuleType.Equals("declared-last", StringComparison.OrdinalIgnoreCase))
                     {
-                        deletionRuleType = "Delete the metaverse object when the last connector is disconnected. Ignore from the following list of management agents";
+                        deletionRuleTypeText = "Delete the metaverse object when the last connector is disconnected. Ignore from the following list of management agents";
                     }
 
-                    Documenter.AddRow(table, new object[] { objectType, deletionRuleType });
+                    Documenter.AddRow(table, new object[] { objectType, deletionRuleTypeText });
+                    var connectorList = deletionRuleType.Equals("declared-last") ? deletionRule.Elements("exclude-ma") : deletionRule.Elements("src-ma");
 
-                    foreach (var connector in deletionRule.Elements("src-ma"))
+                    foreach (var connector in connectorList)
                     {
                         var connectorId = ((string)connector ?? string.Empty).ToUpperInvariant();
                         var connectorName = (string)config.XPathSelectElement(Documenter.GetConnectorXmlRootXPath(pilotConfig) + "/ma-data[translate(id, '" + Documenter.LowercaseLetters + "', '" + Documenter.UppercaseLetters + "') = '" + connectorId + "']/name");
